@@ -287,36 +287,36 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 		IBlockState state = this.world.getBlockState(this.getPos());
 		EnumFacing value = state.getValue(OrientedBlock.FACING);
 		int rot = value.getHorizontalIndex();
-		double xOffset = 0.5;
-		double zOffset = 0.34;
+		double firstAchsis = 0.5;
+		double secondAchsis = 0.34;
+		double secondAchsis2 = 1.0 - secondAchsis;
+		double velX = 0.0;
+		double velZ = 0.07;
+		boolean isInvertedRotated = (rot == 1 || rot == 3);
+		if (!isInvertedRotated) {
+			double tmp = firstAchsis;
+			firstAchsis = secondAchsis;
+			secondAchsis = tmp;
+			velX = velZ;
+			velZ = 0.0;
+		}
+
 		for (int i = 0; i < 3; i++) {
-			if (rot == 1 || rot == 3) {
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + xOffset,
-								this.pos.getY() + 0.64, this.pos.getZ() + zOffset, 0.0, 0.0, 0.07, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + xOffset,
-								this.pos.getY() + 0.64, this.pos.getZ() + 1 - zOffset, 0.0, 0.0, -0.07, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + xOffset,
-								this.pos.getY() + 0.6, this.pos.getZ() + zOffset, 0.0, -0.07, 0.07, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + xOffset,
-								this.pos.getY() + 0.6, this.pos.getZ() + 1 - zOffset, 0.0, -0.07, -0.07, rot));
-			} else {
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + zOffset,
-								this.pos.getY() + 0.64, this.pos.getZ() + xOffset, 0.07, 0.0, 0.0, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + 1 - zOffset,
-								this.pos.getY() + 0.64, this.pos.getZ() + xOffset, -0.07, 0.0, 0.0, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + zOffset,
-								this.pos.getY() + 0.6, this.pos.getZ() + xOffset, 0.07, -0.07, 0.0, rot));
-				Minecraft.getMinecraft().effectRenderer
-						.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + 1 - zOffset,
-								this.pos.getY() + 0.6, this.pos.getZ() + xOffset, -0.07, -0.07, 0.0, rot));
-			}
+			Minecraft.getMinecraft().effectRenderer
+					.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + firstAchsis,
+							this.pos.getY() + 0.64, this.pos.getZ() + secondAchsis, velX, 0.0, velZ, rot));
+
+			Minecraft.getMinecraft().effectRenderer.addEffect(new CleaningStationWashingParticle(this.world,
+					this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.64,
+					this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, 0.0, -velZ, rot));
+
+			Minecraft.getMinecraft().effectRenderer
+					.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + firstAchsis,
+							this.pos.getY() + 0.6, this.pos.getZ() + secondAchsis, velX, -0.07, velZ, rot));
+
+			Minecraft.getMinecraft().effectRenderer.addEffect(new CleaningStationWashingParticle(this.world,
+					this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.6,
+					this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, -0.07, -velZ, rot));
 		}
 	}
 
