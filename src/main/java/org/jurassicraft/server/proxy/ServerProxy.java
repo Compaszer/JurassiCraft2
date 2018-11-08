@@ -3,7 +3,6 @@ package org.jurassicraft.server.proxy;
 import java.util.List;
 
 import org.jurassicraft.JurassiCraft;
-import org.jurassicraft.client.particle.CleaningStationWashingParticle;
 import org.jurassicraft.server.block.BlockHandler;
 import org.jurassicraft.server.block.entity.BugCrateBlockEntity;
 import org.jurassicraft.server.block.entity.CleaningStationBlockEntity;
@@ -49,8 +48,6 @@ import org.jurassicraft.server.util.RegistryHandler;
 import org.jurassicraft.server.maps.VillagerTradeHandler;
 import org.jurassicraft.server.world.WorldGenerator;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
