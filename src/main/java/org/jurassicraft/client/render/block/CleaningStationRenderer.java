@@ -14,43 +14,46 @@ import org.jurassicraft.server.block.OrientedBlock;
 import org.jurassicraft.server.block.entity.CleaningStationBlockEntity;
 
 public class CleaningStationRenderer extends TileEntitySpecialRenderer<CleaningStationBlockEntity> {
-    private Minecraft mc = Minecraft.getMinecraft();
+	private Minecraft mc = Minecraft.getMinecraft();
 
-    @Override
-    public void render(CleaningStationBlockEntity tileEntity, double x, double y, double z, float p_180535_8_, int p_180535_9_, float alpha) {
-        World world = tileEntity.getWorld();
+	@Override
+	public void render(CleaningStationBlockEntity tileEntity, double x, double y, double z, float p_180535_8_,
+			int p_180535_9_, float alpha) {
+		World world = tileEntity.getWorld();
 
-        IBlockState state = world.getBlockState(tileEntity.getPos());
+		IBlockState state = world.getBlockState(tileEntity.getPos());
 
-        if (state.getBlock() == BlockHandler.CLEANING_STATION) {
-            EnumFacing value = state.getValue(OrientedBlock.FACING);
+		if (state.getBlock() == BlockHandler.CLEANING_STATION) {
+			EnumFacing value = state.getValue(OrientedBlock.FACING);
 
-            if (value == EnumFacing.NORTH || value == EnumFacing.SOUTH) {
-                value = value.getOpposite();
-            }
+			if (value == EnumFacing.NORTH || value == EnumFacing.SOUTH) {
+				value = value.getOpposite();
+			}
 
-            int rotation = value.getHorizontalIndex() * 90;
-            float scale = 0.25F;
+			int rotation = value.getHorizontalIndex() * 90;
+			float scale = 0.25F;
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y + 1.5F, z + 0.5);
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(x + 0.5, y + 1.5F, z + 0.5);
 
-            GlStateManager.rotate(rotation, 0, 1, 0);
-            GlStateManager.translate(0.0, -1.1, -0.05);
-            GlStateManager.scale(-scale, -scale, scale);
-            GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(rotation, 0, 1, 0);
+			GlStateManager.translate(0.0, -1.1, -0.05);
+			GlStateManager.scale(-scale, -scale, scale);
+			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
 
-            this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+			GlStateManager.rotate((float) tileEntity.getRenderCleaningRotation(), 1.0F, 0.0F, 0.0F);
 
-            RenderItem renderItem = this.mc.getRenderItem();
+			this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-            ItemStack cleanable = tileEntity.getStackInSlot(0);
+			RenderItem renderItem = this.mc.getRenderItem();
 
-            if (cleanable != null) {
-                renderItem.renderItem(cleanable, renderItem.getItemModelMesher().getItemModel(cleanable));
-            }
+			ItemStack cleanable = tileEntity.getStackInSlot(0);
 
-            GlStateManager.popMatrix();
-        }
-    }
+			if (cleanable != null) {
+				renderItem.renderItem(cleanable, renderItem.getItemModelMesher().getItemModel(cleanable));
+			}
+
+			GlStateManager.popMatrix();
+		}
+	}
 }

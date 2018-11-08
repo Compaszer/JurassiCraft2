@@ -62,7 +62,7 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
     private int minerals;
     private int vitamins;
     private int temperature;
-    private boolean isActive = false;
+    private boolean prevActiveState = false;
 
     private DinosaurEntity dinosaurEntity; //Used for rendering entities
 
@@ -162,8 +162,8 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
             
             boolean active = this.isProcessing(0);
             boolean syncActive = false;
-            if(active != isActive) {
-            	isActive = active;
+            if(active != prevActiveState) {
+            	prevActiveState = active;
             	syncActive = true;
             	
             	
