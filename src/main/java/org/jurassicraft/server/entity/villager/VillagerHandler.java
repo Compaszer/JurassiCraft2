@@ -6,6 +6,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import org.jurassicraft.JurassiCraft;
+import org.jurassicraft.server.world.structure.FossilDigsite;
+import org.jurassicraft.server.world.structure.FossilDigsite2;
 import org.jurassicraft.server.world.structure.GeneticistVillagerHouse;
 
 @Mod.EventBusSubscriber(modid = JurassiCraft.MODID)
@@ -15,10 +17,12 @@ public class VillagerHandler {
     public static void init() {
         VillagerRegistry.instance().registerVillageCreationHandler(new GeneticistVillagerHouse.CreationHandler());
         MapGenStructureIO.registerStructureComponent(GeneticistVillagerHouse.class, "GeneticistHouse");
+        VillagerRegistry.instance().registerVillageCreationHandler(new FossilDigsite2.CreationHandler());
+        MapGenStructureIO.registerStructureComponent(FossilDigsite2.class, "FossilDigsite");
     }
 
     @SubscribeEvent
-    public static void onReigster(RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
+    public static void onRegister(RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
         event.getRegistry().register(GENETICIST);
     }
 }
