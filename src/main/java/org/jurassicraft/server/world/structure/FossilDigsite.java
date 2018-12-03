@@ -1,6 +1,5 @@
 package org.jurassicraft.server.world.structure;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Syntax;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
