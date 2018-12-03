@@ -10,9 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jurassicraft.JurassiCraft;
 import org.jurassicraft.client.model.AnimatableModel;
-import org.jurassicraft.client.model.animation.dto.AnimatableRenderDefDTO;
-import org.jurassicraft.client.model.animation.dto.AnimationsDTO;
-import org.jurassicraft.client.model.animation.dto.PoseDTO;
+import org.jurassicraft.client.model.animation.dto.*;
 import org.jurassicraft.server.api.Animatable;
 import org.jurassicraft.server.dinosaur.Dinosaur;
 import org.jurassicraft.server.entity.GrowthStage;
@@ -33,9 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class PoseHandler<ENTITY extends EntityLivingBase & Animatable> {
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(AnimatableRenderDefDTO.class, new AnimatableRenderDefDTO.AnimatableDeserializer())
-            .create();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(AnimatableRenderDefDTO.class, new AnimatableRenderDefDTO.AnimatableDeserializer()).create();
 
     private Map<GrowthStage, ModelData> modelData;
 

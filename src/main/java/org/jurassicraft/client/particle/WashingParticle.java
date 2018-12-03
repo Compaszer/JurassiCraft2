@@ -7,10 +7,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class CleaningStationWashingParticle extends Particle {
+public class WashingParticle extends Particle {
 
-	public CleaningStationWashingParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
-			double xSpeedIn, double ySpeedIn, double zSpeedIn, int rotation) {
+	public WashingParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int rotation) {
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 		int xSprinkle = ((zSpeedIn != 0) ? 1 : 0) * ((rotation == 0 || rotation == 3) ? 1 : -1);
 		int zSprinkle = ((xSpeedIn != 0) ? 1 : 0) * ((rotation == 0 || rotation == 3) ? 1 : -1);
@@ -47,10 +46,8 @@ public class CleaningStationWashingParticle extends Particle {
 
 	@SideOnly(Side.CLIENT)
 	public static class Factory implements IParticleFactory {
-		public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
-				double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
-			return new CleaningStationWashingParticle(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn,
-					zSpeedIn, 0);
+		public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... parameters) {
+			return new WashingParticle(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, 0);
 		}
 	}
 

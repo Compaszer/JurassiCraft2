@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jurassicraft.JurassiCraft;
-import org.jurassicraft.client.particle.CleaningStationWashingParticle;
+import org.jurassicraft.client.particle.WashingParticle;
 import org.jurassicraft.server.api.CleanableItem;
 import org.jurassicraft.server.api.GrindableItem;
 import org.jurassicraft.server.block.OrientedBlock;
@@ -66,7 +66,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 
 	private boolean prevIsCleaning;
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int cleaingRotation = 0;
 
 	@SideOnly(Side.CLIENT)
@@ -113,8 +113,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		boolean flag = !stack.isEmpty() && stack.isItemEqual(this.slots.get(index))
-				&& ItemStack.areItemStackTagsEqual(stack, this.slots.get(index));
+		boolean flag = !stack.isEmpty() && stack.isItemEqual(this.slots.get(index)) && ItemStack.areItemStackTagsEqual(stack, this.slots.get(index));
 		this.slots.set(index, stack);
 
 		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
@@ -228,8 +227,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 				}
 			} else {
 				if (!this.hasWater() && this.canClean() && isItemFuel(this.slots.get(1))) {
-					this.currentItemWaterTime = this.cleaningStationWaterTime = this
-							.getItemCleanTime(this.slots.get(1));
+					this.currentItemWaterTime = this.cleaningStationWaterTime = this.getItemCleanTime(this.slots.get(1));
 
 					if (this.hasWater()) {
 						dirty = true;
@@ -269,8 +267,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 
 			if (this.isCleaning() != prevIsCleaning) {
 				prevIsCleaning = this.cleanTime > 0;
-				JurassiCraft.NETWORK_WRAPPER
-						.sendToAll(new TileEntityFieldsMessage(getSyncFields(NonNullList.create()), this));
+				JurassiCraft.NETWORK_WRAPPER.sendToAll(new TileEntityFieldsMessage(getSyncFields(NonNullList.create()), this));
 			}
 		}
 
@@ -302,21 +299,13 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 		}
 
 		for (int i = 0; i < 3; i++) {
-			Minecraft.getMinecraft().effectRenderer
-					.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + firstAchsis,
-							this.pos.getY() + 0.64, this.pos.getZ() + secondAchsis, velX, 0.0, velZ, rot));
+			Minecraft.getMinecraft().effectRenderer.addEffect(new WashingParticle(this.world, this.pos.getX() + firstAchsis, this.pos.getY() + 0.64, this.pos.getZ() + secondAchsis, velX, 0.0, velZ, rot));
 
-			Minecraft.getMinecraft().effectRenderer.addEffect(new CleaningStationWashingParticle(this.world,
-					this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.64,
-					this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, 0.0, -velZ, rot));
+			Minecraft.getMinecraft().effectRenderer.addEffect(new WashingParticle(this.world, this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.64, this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, 0.0, -velZ, rot));
 
-			Minecraft.getMinecraft().effectRenderer
-					.addEffect(new CleaningStationWashingParticle(this.world, this.pos.getX() + firstAchsis,
-							this.pos.getY() + 0.6, this.pos.getZ() + secondAchsis, velX, -0.07, velZ, rot));
+			Minecraft.getMinecraft().effectRenderer.addEffect(new WashingParticle(this.world, this.pos.getX() + firstAchsis, this.pos.getY() + 0.6, this.pos.getZ() + secondAchsis, velX, -0.07, velZ, rot));
 
-			Minecraft.getMinecraft().effectRenderer.addEffect(new CleaningStationWashingParticle(this.world,
-					this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.6,
-					this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, -0.07, -velZ, rot));
+			Minecraft.getMinecraft().effectRenderer.addEffect(new WashingParticle(this.world, this.pos.getX() + ((isInvertedRotated) ? firstAchsis : secondAchsis2), this.pos.getY() + 0.6, this.pos.getZ() + ((isInvertedRotated) ? secondAchsis2 : secondAchsis), -velX, -0.07, -velZ, rot));
 		}
 	}
 
@@ -373,10 +362,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 	}
 
 	private static boolean isStackable(ItemStack slotStack, ItemStack insertingStack) {
-		return slotStack.isEmpty() || (ItemStack.areItemsEqual(slotStack, insertingStack)
-				&& ItemStack.areItemStackTagsEqual(slotStack, insertingStack)
-				&& slotStack.getItemDamage() == insertingStack.getItemDamage()
-				&& slotStack.getMaxStackSize() - slotStack.getCount() >= insertingStack.getCount());
+		return slotStack.isEmpty() || (ItemStack.areItemsEqual(slotStack, insertingStack) && ItemStack.areItemStackTagsEqual(slotStack, insertingStack) && slotStack.getItemDamage() == insertingStack.getItemDamage() && slotStack.getMaxStackSize() - slotStack.getCount() >= insertingStack.getCount());
 	}
 
 	@Override
@@ -406,8 +392,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
 		if (Ints.asList(SLOTS_TOP).contains(slotID)) {
-			if (itemstack != null && CleanableItem.getCleanableItem(itemstack) != null
-					&& CleanableItem.getCleanableItem(itemstack).isCleanable(itemstack)) {
+			if (itemstack != null && CleanableItem.getCleanableItem(itemstack) != null && CleanableItem.getCleanableItem(itemstack).isCleanable(itemstack)) {
 				return true;
 			}
 		} else if (Ints.asList(SLOTS_SIDES).contains(slotID)) {
@@ -521,8 +506,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D,
-				(double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+		return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -537,7 +521,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getRenderCleaningRotation() {
 		if (this.isCleaning() && !Minecraft.getMinecraft().isGamePaused()) {
 			incrCleaningRotation();
@@ -545,7 +529,7 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 		return this.cleaingRotation;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void incrCleaningRotation() {
 		this.cleaingRotation++;
 		if (cleaingRotation > 360) {

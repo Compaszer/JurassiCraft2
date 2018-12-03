@@ -13,7 +13,6 @@ import org.jurassicraft.server.plant.PlantHandler;
 
 import java.util.Locale;
 
-@SuppressWarnings("unused")
 public final class LangUtils
 {
     public static final TranslateKey COLORS = new TranslateKey("color.%s.name");
@@ -29,7 +28,6 @@ public final class LangUtils
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
 
-    @SuppressWarnings("deprecation")
     public static String translate(String langKey, Object... args) {
         return net.minecraft.util.text.translation.I18n.canTranslate(langKey)
                        ? net.minecraft.util.text.translation.I18n.translateToLocalFormatted(langKey, args)
@@ -40,7 +38,6 @@ public final class LangUtils
         return translate(langKey.key, args);
     }
 
-    @SuppressWarnings("deprecation")
     public static String translateOrDefault(String langKey, String defaultVal) {
         return net.minecraft.util.text.translation.I18n.canTranslate(langKey) ? translate(langKey) : defaultVal;
     }
