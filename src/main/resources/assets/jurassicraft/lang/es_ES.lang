@@ -28,6 +28,7 @@ entity.jurassicraft.attraction_sign.name=Cartel de Atracción
 entity.jurassicraft.paddock_sign.name=Cartel de Prados
 
 entity.Villager.jurassicraft:geneticist=Genetista
+entity.Villager.jurassicraft:paleontologist=Paleontóloga
 
 //Items ==================================================
 item.plaster_and_bandage.name=Yeso y Venda

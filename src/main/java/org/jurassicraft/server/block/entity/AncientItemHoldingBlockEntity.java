@@ -11,6 +11,10 @@ public class AncientItemHoldingBlockEntity extends TileEntity {
 
 	private int shovelRotation = 0;
 
+	public AncientItemHoldingBlockEntity() {
+		
+	}
+	
 	public AncientItemHoldingBlockEntity(int rot) {
 		this.shovelRotation = rot;
 	}

@@ -6,9 +6,12 @@ import java.util.Random;
 import org.jurassicraft.server.block.entity.AncientItemHoldingBlockEntity;
 import org.jurassicraft.server.tab.TabHandler;
 
+import com.ibm.icu.lang.UCharacter.SentenceBreak;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +34,7 @@ public class AncientItemHoldingBlock extends Block implements ITileEntityProvide
 	public AncientItemHoldingBlock() {
 		super(Material.SAND);
 		setUnlocalizedName("ancient_item_holding_block");
+		setSoundType(SoundType.SAND);
 		// setCreativeTab(TabHandler.BLOCKS);
 		this.hasTileEntity = true;
 	}

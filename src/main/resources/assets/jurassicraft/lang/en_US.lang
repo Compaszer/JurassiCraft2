@@ -29,6 +29,7 @@ entity.jurassicraft.attraction_sign.name=Attraction Sign
 entity.jurassicraft.paddock_sign.name=Paddock Sign
 
 entity.Villager.jurassicraft:geneticist=Geneticist
+entity.Villager.jurassicraft:paleontologist=Paleontologist
 
 //Items ==================================================
 item.plaster_and_bandage.name=Plaster and Bandage
