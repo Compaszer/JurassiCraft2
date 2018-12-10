@@ -129,7 +129,7 @@ public class FossilDigsite2 extends StructureVillagePieces.Village {
 		settings.setBoundingBox(new StructureBoundingBox(this.boundingBox.minX + ox, this.boundingBox.minY, this.boundingBox.minZ + oz,
 				this.boundingBox.maxX + ox, this.boundingBox.maxZ, this.boundingBox.maxZ + oz));
 		template.addBlocksToWorldChunk(world, lowerCorner, settings);
-		spawnPaleontologist(world);
+		spawnPaleontologist(world, random);
 		this.count++;
 		int dinoType = random.nextInt(FossilBlock.VARIANT.getAllowedValues().size());
 		Map<BlockPos, String> dataBlocks = template.getDataBlocks(lowerCorner, settings);
@@ -237,13 +237,13 @@ public class FossilDigsite2 extends StructureVillagePieces.Village {
 		this.count = tagCompound.getInteger("count");
 	}
 
-	private void spawnPaleontologist(World world) {
-		EntityVillager paleontologist = new EntityVillager(world, VillagerRegistry.getId(VillagerHandler.PALEONTOLOGIST));
-		paleontologist.setPosition(boundingBox.minX + (boundingBox.maxX - boundingBox.minX) / 2, boundingBox.minY + 3,
-				boundingBox.minZ + (boundingBox.maxZ - boundingBox.minZ) / 2);
-		paleontologist.setHealth(100);
-		paleontologist.tasks.addTask(6, new EntityAIResearchFossil(paleontologist, 1));
-		world.spawnEntity(paleontologist);
+	private void spawnPaleontologist(World world, Random random) {
+		if(random.nextInt(2) == 0) {
+			EntityVillager paleontologist = new EntityVillager(world, VillagerRegistry.getId(VillagerHandler.PALEONTOLOGIST));
+			paleontologist.setPosition(boundingBox.minX + (boundingBox.maxX - boundingBox.minX) / 2, boundingBox.minY + 3,
+					boundingBox.minZ + (boundingBox.maxZ - boundingBox.minZ) / 2);
+			world.spawnEntity(paleontologist);
+		}
 	}
 
 	public static class CreationHandler implements VillagerRegistry.IVillageCreationHandler {

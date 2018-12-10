@@ -1,5 +1,11 @@
 package org.jurassicraft.server.entity.villager.ai;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import org.jurassicraft.server.block.BlockHandler;
+import org.jurassicraft.server.block.FossilBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.material.Material;
@@ -16,38 +22,50 @@ import net.minecraft.world.World;
 public class EntityAIResearchFossil extends EntityAIMoveToBlock {
 	/** Villager that is harvesting */
 	private final EntityVillager villager;
-	private boolean hasFarmItem;
-	private boolean wantsToReapStuff;
-	/** 0 => harvest, 1 => replant, -1 => none */
+	/** 0 => discover, -1 => none */
 	private int currentTask;
+
+	private static final int explorationRadius = 3;
+	private static final int stayAtExploration = 60;
+
+	private int staiedAtExploration = 0;
+	private int stayRandom = 0;
+
+	private int standingOffset = 0;
+
+	private Random random;
 
 	public EntityAIResearchFossil(EntityVillager villagerIn, double speedIn) {
 		super(villagerIn, speedIn, 16);
 		this.villager = villagerIn;
+		this.random = new Random();
 	}
+
+	// /tp 679 20 99
 
 	/**
 	 * Returns whether the EntityAIBase should begin execution.
 	 */
 	public boolean shouldExecute() {
-		if (this.runDelay <= 0) {
-			if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.villager.world, this.villager)) {
-				return false;
-			}
-
-			this.currentTask = -1;
-			this.hasFarmItem = this.villager.isFarmItemInInventory();
-			this.wantsToReapStuff = this.villager.wantsMoreFood();
+		if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.villager.world, this.villager)) {
+			return false;
 		}
-
-		return super.shouldExecute();
+		if (this.runDelay > 0) {
+			--this.runDelay;
+			return false;
+		} else {
+			this.runDelay = 20 + this.villager.getRNG().nextInt(10);
+			this.currentTask = 0;
+			this.staiedAtExploration = 0;
+			return this.searchForDestination();
+		}
 	}
 
 	/**
 	 * Returns whether an in-progress EntityAIBase should continue executing
 	 */
 	public boolean shouldContinueExecuting() {
-		return this.currentTask >= 0 && super.shouldContinueExecuting();
+		return this.currentTask >= 0;
 	}
 
 	/**
@@ -55,62 +73,23 @@ public class EntityAIResearchFossil extends EntityAIMoveToBlock {
 	 */
 	public void updateTask() {
 		super.updateTask();
-		this.villager.getLookHelper().setLookPosition((double) this.destinationBlock.getX() + 0.5D,
-				(double) (this.destinationBlock.getY() + 1), (double) this.destinationBlock.getZ() + 0.5D, 10.0F,
-				(float) this.villager.getVerticalFaceSpeed());
 
-		if (this.getIsAboveDestination()) {
-			World world = this.villager.world;
-			BlockPos blockpos = this.destinationBlock.up();
-			IBlockState iblockstate = world.getBlockState(blockpos);
-			Block block = iblockstate.getBlock();
-
-			if (this.currentTask == 0 && block instanceof BlockCrops && ((BlockCrops) block).isMaxAge(iblockstate)) {
-				world.destroyBlock(blockpos, true);
-			} else if (this.currentTask == 1 && iblockstate.getMaterial() == Material.AIR) {
-				InventoryBasic inventorybasic = this.villager.getVillagerInventory();
-
-				for (int i = 0; i < inventorybasic.getSizeInventory(); ++i) {
-					ItemStack itemstack = inventorybasic.getStackInSlot(i);
-					boolean flag = false;
-
-					if (!itemstack.isEmpty()) {
-						if (itemstack.getItem() == Items.WHEAT_SEEDS) {
-							world.setBlockState(blockpos, Blocks.WHEAT.getDefaultState(), 3);
-							flag = true;
-						} else if (itemstack.getItem() == Items.POTATO) {
-							world.setBlockState(blockpos, Blocks.POTATOES.getDefaultState(), 3);
-							flag = true;
-						} else if (itemstack.getItem() == Items.CARROT) {
-							world.setBlockState(blockpos, Blocks.CARROTS.getDefaultState(), 3);
-							flag = true;
-						} else if (itemstack.getItem() == Items.BEETROOT_SEEDS) {
-							world.setBlockState(blockpos, Blocks.BEETROOTS.getDefaultState(), 3);
-							flag = true;
-						} else if (itemstack.getItem() instanceof net.minecraftforge.common.IPlantable) {
-							if (((net.minecraftforge.common.IPlantable) itemstack.getItem()).getPlantType(world,
-									blockpos) == net.minecraftforge.common.EnumPlantType.Crop) {
-								world.setBlockState(blockpos,
-										((net.minecraftforge.common.IPlantable) itemstack.getItem()).getPlant(world, blockpos), 3);
-								flag = true;
-							}
-						}
-					}
-
-					if (flag) {
-						itemstack.shrink(1);
-
-						if (itemstack.isEmpty()) {
-							inventorybasic.setInventorySlotContents(i, ItemStack.EMPTY);
-						}
-
-						break;
-					}
-				}
+		if (this.isAtDestination()) {
+			if (this.staiedAtExploration == 0) {
+				this.stayRandom = this.random.nextInt(40);
 			}
-
-			this.currentTask = -1;
-			this.runDelay = 10;
+			this.staiedAtExploration++;
+			this.setVillagerLook();
+			if (this.staiedAtExploration == stayAtExploration / 3) {
+				this.villager.world.destroyBlock(this.destinationBlock.add(this.standingOffset * -1, 0, 0), false);
+			} else if (this.staiedAtExploration >= stayAtExploration + this.stayRandom) {
+				if (!(this.villager.world.getBlockState(this.destinationBlock.add(this.standingOffset * -1, -1, 0))
+						.getBlock() instanceof FossilBlock)) {
+					this.villager.world.setBlockState(this.destinationBlock.add(this.standingOffset * -1, 0, 0),
+							Blocks.SAND.getDefaultState());
+				}
+				this.currentTask = -1;
+			}
 		}
 	}
 
@@ -118,25 +97,52 @@ public class EntityAIResearchFossil extends EntityAIMoveToBlock {
 	 * Return true to set given position as destination
 	 */
 	protected boolean shouldMoveTo(World worldIn, BlockPos pos) {
-		Block block = worldIn.getBlockState(pos).getBlock();
+		return true;
+	}
 
-		if (block == Blocks.FARMLAND) {
-			pos = pos.up();
-			IBlockState iblockstate = worldIn.getBlockState(pos);
-			block = iblockstate.getBlock();
+	private void setVillagerLook() {
+		this.villager.getLookHelper().setLookPosition(
+				(double) this.destinationBlock.getX() + this.standingOffset + 0.5D,
+				(double) (this.destinationBlock.getY() + 1), (double) this.destinationBlock.getZ() + 0.5D, 10.0F,
+				(float) this.villager.getVerticalFaceSpeed());
+		this.villager.setRotationYawHead((this.standingOffset == -1) ? 270 : 90);
+	}
 
-			if (block instanceof BlockCrops && ((BlockCrops) block).isMaxAge(iblockstate) && this.wantsToReapStuff
-					&& (this.currentTask == 0 || this.currentTask < 0)) {
-				this.currentTask = 0;
-				return true;
-			}
+	private boolean isAtDestination() {
+		BlockPos vil = new BlockPos(this.villager);
+		return this.getIsAboveDestination()
+				|| (vil.getX() == this.destinationBlock.getX() && vil.getZ() == this.destinationBlock.getZ()
+						&& Math.abs(vil.getY() - this.destinationBlock.getY()) <= 2);
+	}
 
-			if (iblockstate.getMaterial() == Material.AIR && this.hasFarmItem && (this.currentTask == 1 || this.currentTask < 0)) {
-				this.currentTask = 1;
-				return true;
+	private boolean searchForDestination() {
+		BlockPos blockpos = new BlockPos(this.villager);
+
+		ArrayList<BlockPos> candidates = new ArrayList<BlockPos>();
+		for (int x = -explorationRadius; x <= explorationRadius; x++) {
+			for (int z = -explorationRadius; z <= explorationRadius; z++) {
+				for (int y = -3; y <= 3; y++) {
+					BlockPos tmpPos = new BlockPos(this.villager).add(x, y, z);
+					if (villager.world.getBlockState(tmpPos).getBlock() == Blocks.SAND) {
+						candidates.add(tmpPos);
+					}
+				}
 			}
 		}
-
+		if (candidates.size() > 0) {
+			Random random = new Random();
+			BlockPos selectedPos = candidates.get(random.nextInt(candidates.size()));
+			while (villager.world.getBlockState(selectedPos.up()).getBlock() == Blocks.SAND) {
+				selectedPos = selectedPos.up();
+			}
+			if (selectedPos.getX() > blockpos.getX()) {
+				this.standingOffset = -1;
+			} else {
+				this.standingOffset = 1;
+			}
+			this.destinationBlock = selectedPos.add(this.standingOffset, 0, 0);
+			return true;
+		}
 		return false;
 	}
 }

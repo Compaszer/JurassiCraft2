@@ -62,7 +62,7 @@ public class PaleontologistCareer extends VillagerRegistry.VillagerCareer {
 
 		EntityVillager.ITradeList commonTradeList = (EntityVillager.ITradeList) (merchant, recipeList, random) -> {
 			List<MerchantRecipe> possible = new ArrayList<>();
-			possible.add(new MerchantRecipe(new ItemStack(Items.EMERALD, random.nextInt(4) + 1), new ItemStack(Items.IRON_PICKAXE)));
+			possible.add(new MerchantRecipe(new ItemStack(Items.EMERALD, random.nextInt(4) + 1), new ItemStack(Items.IRON_SHOVEL)));
 			possible.add(new MerchantRecipe(new ItemStack(Items.EMERALD, random.nextInt(2) + 1), new ItemStack(ItemHandler.PLASTER_AND_BANDAGE, random.nextInt(3) + 1)));
 			possible.add(new MerchantRecipe(new ItemStack(Items.EMERALD, random.nextInt(4) + 1), new ItemStack(ItemHandler.PLANT_FOSSIL)));
 			int count = 1;

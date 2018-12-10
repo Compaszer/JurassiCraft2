@@ -156,7 +156,7 @@ public class Loot {
 				table.addPool(Loot.pool("items").rolls(8, 11).entries(amber, tooth, actionFigure).build());
 			} else if (name.getResourcePath().equals(Loot.FOSSIL_DIGSITE_LOOT.getResourcePath())) {
 				ArrayList<LootEntry> fossilParts = new ArrayList<LootEntry>();
-				for(String fossilType : ItemHandler.FOSSILS.keySet()) {
+				for (String fossilType : ItemHandler.FOSSILS.keySet()) {
 					LootEntry fossilPart = Loot.entry(ItemHandler.FOSSILS.get(fossilType)).weight(1)
 							.function(DINOSAUR_DATA).count(1, 3).build();
 					fossilParts.add(fossilPart);
@@ -319,16 +319,13 @@ public class Loot {
 				Dinosaur dinosaur = dinosaurs.get(rand.nextInt(dinosaurs.size()));
 				if (stack.getItem() instanceof FossilItem) {
 					FossilItem s = (FossilItem) stack.getItem();
-					if (s.fossilDinosaurs.get("tooth").contains(dinosaur)) {
+					if (s.fossilDinosaurs.get(s.getBoneType()).contains(dinosaur)) {
 						stack.setItemDamage(EntityHandler.getDinosaurId(dinosaur));
 						return stack;
 					}
 				} else if (stack.getItem() instanceof DisplayBlockItem) {
 					DisplayBlockItem s = (DisplayBlockItem) stack.getItem();
 					stack.setItemDamage(s.getMetadata(EntityHandler.getDinosaurId(dinosaur), 0, false));
-					return stack;
-				} else {
-					stack.setItemDamage(EntityHandler.getDinosaurId(dinosaur));
 					return stack;
 				}
 
