@@ -18,3 +18,4 @@
 *Improved the helicopter's behaviour (Kicks for flying etc.)
 *Fixed fossil digsite spawning, loot and added dynamic generation behaviour
 +Added AncientItemHoldingBlock as fossil digsite decoration block
++Added paleontologist villager
