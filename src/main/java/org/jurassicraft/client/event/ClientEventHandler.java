@@ -17,10 +17,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.jurassicraft.JurassiCraft;
+import org.jurassicraft.client.entity.DummyCameraEntity;
 import org.jurassicraft.client.proxy.ClientProxy;
 import org.jurassicraft.server.entity.vehicle.MultiSeatedEntity;
 import org.jurassicraft.server.item.DartGun;
@@ -51,6 +53,12 @@ public class ClientEventHandler {
             this.isGUI = false;
         }
     }
+    
+    @SubscribeEvent
+	public void worldEventUnload(WorldEvent.Unload event) {
+    	DummyCameraEntity.onUnloadWorld();
+    }
+    
 
     @SubscribeEvent
     public void onGameOverlay(RenderGameOverlayEvent.Post event) {

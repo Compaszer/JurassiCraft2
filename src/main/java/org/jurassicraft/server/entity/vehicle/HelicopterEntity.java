@@ -4,6 +4,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import org.jurassicraft.JurassiCraft;
+import org.jurassicraft.client.entity.DummyCameraEntity;
 import org.jurassicraft.client.proxy.ClientProxy;
 import org.jurassicraft.client.sound.EntitySound;
 import org.jurassicraft.server.entity.ai.util.InterpValue;
@@ -74,7 +76,7 @@ public class HelicopterEntity extends VehicleEntity {
 	private MutableBlockPos mb = new MutableBlockPos();
 
 	private float acceleration = 0.0f;
-	private float airResistance = 0.8f;
+	private float airResistance = 0.4f;
 	private int maxSpeed = 20;
 	private float speed = 0;
 	/*
@@ -92,7 +94,7 @@ public class HelicopterEntity extends VehicleEntity {
 		this.speedModifier = 1.5f;
 		this.isFlying = false;
 		this.direction = new MutableVec3(0, 1, 0);
-		this.enginePower = 1;
+		this.enginePower = 1.0f;
 	}
 
 	public boolean upward() {
@@ -218,6 +220,14 @@ public class HelicopterEntity extends VehicleEntity {
 				passenger.noClip = false;
 				break;
 			}
+		}
+		if (this.world.isRemote) {
+			System.out.println("REMOVED");
+			EntityPlayerSP player = Minecraft.getMinecraft().player;
+			DummyCameraEntity dummyCamera = new DummyCameraEntity(Minecraft.getMinecraft(), this.world);
+			dummyCamera.setPosition(player.posX, player.posY, player.posZ);
+			this.world.spawnEntity(dummyCamera);
+			Minecraft.getMinecraft().setRenderViewEntity(dummyCamera);
 		}
 	}
 
@@ -353,7 +363,8 @@ public class HelicopterEntity extends VehicleEntity {
 				this.speed = -this.maxSpeed;
 			}
 
-			System.out.println("speed: " + this.speed + ";acceleration: " + this.acceleration);
+			// System.out.println("speed: " + this.speed + ";acceleration: " +
+			// this.acceleration);
 
 			if (!this.isFlying) {
 				this.speedModifier = -0.75f;

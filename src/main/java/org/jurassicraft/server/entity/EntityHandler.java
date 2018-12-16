@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jurassicraft.JurassiCraft;
+import org.jurassicraft.client.entity.DummyCameraEntity;
 import org.jurassicraft.server.api.Hybrid;
 import org.jurassicraft.server.conf.JurassiCraftConfig;
 import org.jurassicraft.server.dinosaur.BrachiosaurusDinosaur;
@@ -116,6 +117,7 @@ public class EntityHandler {
 
         registerEntity(DinosaurEggEntity.class, "Dinosaur Egg");
         registerEntity(HelicopterEntity.class, "Helicopter base");
+        registerEntity(DummyCameraEntity.class, "DummyCameraEntity");
     }
 
     private static void initDinosaurs() {
