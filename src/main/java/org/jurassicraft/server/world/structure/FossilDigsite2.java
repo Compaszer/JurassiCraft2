@@ -141,7 +141,6 @@ public class FossilDigsite2 extends StructureVillagePieces.Village {
 		
 		Map<BlockPos, String> dataBlocks2 = template.getDataBlocks(lowerCorner, settings);
 		HashMap<BlockPos, IBlockState> defaultBlocks = getWorldDefaultBlocks(dataBlocks2, world);
-		System.out.println(defaultBlocks.size());
 		template.addBlocksToWorldChunk(world, lowerCorner, settings);
 		spawnPaleontologist(world, random);
 		Map<BlockPos, String> dataBlocks = template.getDataBlocks(lowerCorner, settings);
