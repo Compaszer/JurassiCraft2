@@ -23,28 +23,31 @@ import net.minecraft.world.World;
 
 public class AncientItemHoldingBlockRenderer extends TileEntitySpecialRenderer<AncientItemHoldingBlockEntity> {
 	private Minecraft mc = Minecraft.getMinecraft();
-	ItemStack stack = new ItemStack(Items.IRON_SHOVEL, 1, 0);
 
 	@Override
 	public void render(AncientItemHoldingBlockEntity te, double x, double y, double z, float partialTicks,
 			int destroyStage, float alpha) {
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(x + 0.5F, y + 1.0F, z + 0.5F);
-		GlStateManager.disableLighting();
+		if (te.getDisplayItemStack() != null) {
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(x + 0.5F + te.getDisplayItemXOffset(), y + 0.5F + te.getDisplayItemYOffset(),
+					z + 0.5F + te.getDisplayItemZOffset());
+			GlStateManager.disableLighting();
 
-		float scale = 0.7f;
-		// GlStateManager.rotate(te.getShovelRotation(), 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate(90, 1.0F, 0.0F, 0.0F);
-		GlStateManager.scale(scale, scale, scale);
-		GlStateManager.pushAttrib();
+			float scale = 0.7f;
+			GlStateManager.rotate(te.getItemRotation(), 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(90, 1.0F, 0.0F, 0.0F);
+			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.pushAttrib();
 
-		RenderHelper.enableStandardItemLighting();
-		Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-		RenderHelper.disableStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
+			Minecraft.getMinecraft().getRenderItem().renderItem(te.getDisplayItemStack(),
+					ItemCameraTransforms.TransformType.FIXED);
+			RenderHelper.disableStandardItemLighting();
 
-		GlStateManager.popAttrib();
-		GlStateManager.enableLighting();
-		GlStateManager.popMatrix();
+			GlStateManager.popAttrib();
+			GlStateManager.enableLighting();
+			GlStateManager.popMatrix();
+		}
 	}
 }

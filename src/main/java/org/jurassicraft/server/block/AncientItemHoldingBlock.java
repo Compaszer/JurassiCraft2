@@ -12,8 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -25,6 +27,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,6 +38,8 @@ public class AncientItemHoldingBlock extends Block implements ITileEntityProvide
 		super(Material.SAND);
 		setUnlocalizedName("ancient_item_holding_block");
 		setSoundType(SoundType.SAND);
+		setHardness(Blocks.SAND.getBlockHardness(this.getDefaultState(), Minecraft.getMinecraft().world,
+				new BlockPos(1, 1, 1)));
 		// setCreativeTab(TabHandler.BLOCKS);
 		this.hasTileEntity = true;
 	}
@@ -42,7 +47,10 @@ public class AncientItemHoldingBlock extends Block implements ITileEntityProvide
 	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
 		super.onBlockHarvested(worldIn, pos, state, player);
-		spawnAsEntity(worldIn, pos, new ItemStack(Items.IRON_SHOVEL));
+		AncientItemHoldingBlockEntity tile = (AncientItemHoldingBlockEntity) worldIn.getTileEntity(pos);
+		if (tile != null && tile.getDisplayItemStack() != null) {
+			spawnAsEntity(worldIn, pos, tile.getDisplayItemStack());
+		}
 	}
 
 	@Override
@@ -52,8 +60,7 @@ public class AncientItemHoldingBlock extends Block implements ITileEntityProvide
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		Random rand = new Random();
-		return new AncientItemHoldingBlockEntity(rand.nextInt(360));
+		return new AncientItemHoldingBlockEntity();
 	}
 
 	@Override
@@ -82,6 +89,12 @@ public class AncientItemHoldingBlock extends Block implements ITileEntityProvide
 		super.eventReceived(state, worldIn, pos, id, param);
 		TileEntity tileentity = worldIn.getTileEntity(pos);
 		return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
+	}
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
+			EntityPlayer player) {
+		return new ItemStack(Blocks.SAND);
 	}
 
 	// @Override
