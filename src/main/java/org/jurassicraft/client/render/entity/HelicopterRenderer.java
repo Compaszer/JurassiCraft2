@@ -29,29 +29,24 @@ import org.jurassicraft.server.tabula.TabulaModelHelper;
 
 @SideOnly(Side.CLIENT)
 public abstract class HelicopterRenderer<E extends HelicopterEntity> extends Render<E> {
-    private static final ResourceLocation[] DESTROY_STAGES = IntStream.range(0, 10)
-            .mapToObj(n -> new ResourceLocation(String.format("textures/blocks/destroy_stage_%d.png", n)))
-            .toArray(ResourceLocation[]::new);
-
-
-
-    protected final String carName;
+    private static final ResourceLocation[] DESTROY_STAGES = IntStream.range(0, 10).mapToObj(n -> new ResourceLocation(String.format("textures/blocks/destroy_stage_%d.png", n))).toArray(ResourceLocation[]::new);
+    protected final String helicopterName;
     protected HelicopterAnimator animator;
     protected final ResourceLocation texture;
     protected TabulaModel baseModel;
     protected TabulaModel destroyModel;
 
-    protected HelicopterRenderer(RenderManager renderManager, String carName) {
+    protected HelicopterRenderer(RenderManager renderManager, String helicopterName) {
         super(renderManager);
-        this.carName = carName;
+        this.helicopterName = helicopterName;
         this.animator = createCarAnimator();
-        texture = new ResourceLocation(JurassiCraft.MODID, "textures/entities/" + carName + "/" + carName + ".png");
+        texture = new ResourceLocation(JurassiCraft.MODID, "textures/entities/" + helicopterName + "/" + helicopterName + ".png");
         try {
-            TabulaModelContainer container = TabulaModelHelper.loadTabulaModel("/assets/jurassicraft/models/entities/" + carName + "/" + carName + ".tbl");
+        	TabulaModelContainer container = TabulaModelHelper.loadTabulaModel(new ResourceLocation(JurassiCraft.MODID, "models/entities/" + helicopterName + "/" + helicopterName));
             this.baseModel = new TabulaModel(container, animator);
             this.destroyModel = new TabulaModel(new TabulaModelUV(container, 16, 16), animator);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load car " + carName,e);
+            throw new RuntimeException("Unable to load helicopter " + helicopterName,e);
         }
 
     }

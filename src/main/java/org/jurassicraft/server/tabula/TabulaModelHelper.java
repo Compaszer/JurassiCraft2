@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import net.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeContainer;
 import net.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeGroupContainer;
 import net.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
+import net.minecraft.util.ResourceLocation;
+
 import org.jurassicraft.JurassiCraft;
 
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class TabulaModelHelper {
+	
     public static TabulaCubeContainer getCubeByName(String name, TabulaModelContainer model) {
         List<TabulaCubeContainer> allCubes = getAllCubes(model);
 
@@ -83,17 +86,15 @@ public class TabulaModelHelper {
         return retCubes;
     }
 
-    public static TabulaModelContainer loadTabulaModel(String path) throws IOException {
-        if (!path.startsWith("/")) {
-            path = "/" + path;
+    public static TabulaModelContainer loadTabulaModel(ResourceLocation location) throws IOException {
+    	
+        String path = "/assets/" + location.getResourceDomain() + "/" + location.getResourcePath() + ".tbl";
+        try (InputStream stream = TabulaModelHelper.class.getResourceAsStream(path)) {
+            if (stream == null) {
+                throw new IllegalArgumentException("Could not find tabula model at " + location);
+            }
+            return TabulaModelHelper.loadTabulaModel(getModelJsonStream(path, stream));
         }
-
-        if (!path.endsWith(".tbl")) {
-            path += ".tbl";
-        }
-
-        InputStream stream = TabulaModelHelper.class.getResourceAsStream(path);
-        return TabulaModelHelper.loadTabulaModel(getModelJsonStream(path, stream));
     }
 
     public static TabulaModelContainer loadTabulaModel(InputStream stream) {

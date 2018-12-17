@@ -161,7 +161,8 @@ public class SelectDinoGui extends GuiScreen {
                 ResourceLocation texture = this.TEXTURES.get(id);
 
                 if (texture == null) {
-                    texture = new ResourceLocation(JurassiCraft.MODID, "textures/paddock/" + EntityHandler.getDinosaurById(id).getName().toLowerCase(Locale.ENGLISH) + ".png");
+                	ResourceLocation identifier = dinosaur.getIdentifier();
+                    texture = new ResourceLocation(identifier.getResourceDomain(), "textures/paddock/" + identifier.getResourcePath() + ".png");
                     this.TEXTURES.put(id, texture);
                 }
 
@@ -187,7 +188,7 @@ public class SelectDinoGui extends GuiScreen {
 
                 GlStateManager.scale(textScale, textScale, textScale);
 
-                this.drawCenteredString(this.mc.fontRenderer, dinosaur.getName(), (int) ((x + 8) / textScale), (int) ((y + 17) / textScale), 0xFFFFFF);
+                this.drawCenteredString(this.mc.fontRenderer, dinosaur.getLocalizedName(), (int) ((x + 8) / textScale), (int) ((y + 17) / textScale), 0xFFFFFF);
 
                 GlStateManager.popMatrix();
 

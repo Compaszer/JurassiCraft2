@@ -128,7 +128,7 @@ public class Loot {
         } else if (name.getResourcePath().equals(Loot.VISITOR_DINING_HALL.getResourcePath())) {
             LootEntry amber = Loot.entry(ItemHandler.AMBER).weight(2).count(0, 1).data(0, 1).build();
             LootEntry tooth = Loot.entry(ItemHandler.FOSSILS.get("tooth")).weight(2).function(DINOSAUR_DATA).count(1, 2).build();
-            LootEntry actionFigure = Loot.entry(ItemHandler.DISPLAY_BLOCK).function(DINOSAUR_DATA).weight(1).build();
+            LootEntry actionFigure = Loot.entry(ItemHandler.DISPLAY_BLOCK_ITEM).function(DINOSAUR_DATA).weight(1).build();
             table.addPool(Loot.pool("items").rolls(8, 11).entries(amber, tooth, actionFigure).build());
         }else if (name.getResourcePath().equals(Loot.VISITOR_KITCHEN.getResourcePath())) {
               LootEntry waterBottle = Loot.entry(Items.POTIONITEM).count(0, 1).function(POTION_DATA).build();

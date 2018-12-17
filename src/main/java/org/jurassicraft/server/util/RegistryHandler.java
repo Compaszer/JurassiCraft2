@@ -147,7 +147,7 @@ public class RegistryHandler
         for (RegistryEvent.MissingMappings.Mapping<Item> missing : event.getMappings()) {
             ResourceLocation identifier = new ResourceLocation(missing.key.getResourcePath());
             if (identifier.equals(new ResourceLocation(JurassiCraft.MODID, "action_figure"))) {
-                missing.remap(ItemHandler.DISPLAY_BLOCK);
+                missing.remap(ItemHandler.DISPLAY_BLOCK_ITEM);
             }
         }
     }

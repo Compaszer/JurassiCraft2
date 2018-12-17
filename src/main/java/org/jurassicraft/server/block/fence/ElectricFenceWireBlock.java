@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import org.jurassicraft.client.sound.SoundHandler;
 import org.jurassicraft.server.block.entity.ElectricFenceWireBlockEntity;
 import org.jurassicraft.server.damage.DamageSources;
+import org.jurassicraft.server.dinosaur.Dinosaur;
 import org.jurassicraft.server.entity.DinosaurEntity;
 import org.jurassicraft.server.tab.TabHandler;
 
@@ -46,7 +47,11 @@ public class ElectricFenceWireBlock extends BlockContainer {
 
     @Override
     public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
-        return entity instanceof EntityPlayer || (entity instanceof DinosaurEntity && ((DinosaurEntity) entity).getDinosaur().canClimb());
+        if (entity instanceof DinosaurEntity) {
+            Dinosaur dinosaur = ((DinosaurEntity) entity).getDinosaur();
+            return dinosaur.getMetadata().canClimb();
+        }
+        return entity instanceof EntityPlayer;
     }
 
     @Override

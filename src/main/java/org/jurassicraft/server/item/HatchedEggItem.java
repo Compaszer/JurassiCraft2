@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import org.jurassicraft.JurassiCraft;
 import org.jurassicraft.server.dinosaur.Dinosaur;
+import org.jurassicraft.server.dinosaur.DinosaurMetadata;
 import org.jurassicraft.server.entity.DinosaurEntity;
 import org.jurassicraft.server.entity.EntityHandler;
 import org.jurassicraft.server.util.LangUtils;
@@ -26,9 +27,8 @@ public class HatchedEggItem extends DNAContainerItem {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        Dinosaur dinosaur = this.getDinosaur(stack);
-
-        return LangUtils.translate(dinosaur.givesDirectBirth() ? "item.gestated.name" :"item.hatched_egg.name").replace("{dino}", LangUtils.getDinoName(dinosaur));
+        DinosaurMetadata metadata = this.getDinosaur(stack).getMetadata();
+        return LangUtils.translate(metadata.givesDirectBirth() ? "item.gestated.name" : "item.hatched_egg.name").replace("{dino}", LangUtils.getDinoName(this.getDinosaur(stack)));
     }
     
     @Override
@@ -92,26 +92,21 @@ public class HatchedEggItem extends DNAContainerItem {
         if (player.canPlayerEdit(pos, side, stack)) {
             if (!world.isRemote) {
                 Dinosaur dinosaur = this.getDinosaur(stack);
-
-                try {
-                    DinosaurEntity entity = dinosaur.getDinosaurClass().getDeclaredConstructor(World.class).newInstance(world);
-
-                    entity.setPosition(pos.getX() + hitX, pos.getY(), pos.getZ() + hitZ);
-                    entity.setAge(0);
-                    entity.setGenetics(this.getGeneticCode(player, stack));
-                    entity.setDNAQuality(this.getDNAQuality(player, stack));
-                    entity.setMale(this.getGender(player, stack));
-                    if (!player.isSneaking()) {
-                        entity.setOwner(player);
-                    }
-
-                    world.spawnEntity(entity);
-
-                    if (!player.capabilities.isCreativeMode) {
-                        stack.shrink(1);
-                    }
-                } catch (ReflectiveOperationException e) {
-                    JurassiCraft.getLogger().warn("Failed to spawn dinosaur from hatched egg", e);
+                DinosaurEntity entity = dinosaur.construct(world);
+                
+                entity.setPosition(pos.getX() + hitX, pos.getY(), pos.getZ() + hitZ);
+                entity.setAge(0);
+                entity.setGenetics(getGeneticCode(player, stack));
+                entity.setDNAQuality(getDNAQuality(player, stack));
+                entity.setMale(this.getGender(player, stack));
+                
+                if (!player.isSneaking()) {
+                    entity.setOwner(player);
+                }
+                world.spawnEntity(entity);
+                
+                if (!player.capabilities.isCreativeMode) {
+                    stack.shrink(1);
                 }
             }
 

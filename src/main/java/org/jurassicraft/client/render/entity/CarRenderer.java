@@ -6,33 +6,28 @@ import javax.annotation.Nullable;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector4d;
 
-import net.ilexiconn.llibrary.client.model.tabula.TabulaModel;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
-import net.minecraft.client.renderer.RenderHelper;
 import org.jurassicraft.JurassiCraft;
-import org.jurassicraft.client.model.ResetControlTabulaModel;
 import org.jurassicraft.client.model.TabulaModelUV;
 import org.jurassicraft.client.model.animation.entity.vehicle.CarAnimator;
-import org.jurassicraft.client.model.animation.entity.vehicle.HelicopterAnimator;
 import org.jurassicraft.server.entity.ai.util.MathUtils;
+import org.jurassicraft.server.entity.vehicle.HelicopterEntity;
 import org.jurassicraft.server.entity.vehicle.VehicleEntity;
+import org.jurassicraft.server.tabula.TabulaModelHelper;
 
+import net.ilexiconn.llibrary.client.model.tabula.TabulaModel;
+import net.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jurassicraft.server.entity.vehicle.HelicopterEntity;
-import org.jurassicraft.server.entity.vehicle.JeepWranglerEntity;
-import org.jurassicraft.server.tabula.TabulaModelHelper;
 
 @SideOnly(Side.CLIENT)
 public abstract class CarRenderer<E extends VehicleEntity> extends Render<E> {
-    private static final ResourceLocation[] DESTROY_STAGES = IntStream.range(0, 10)
-        .mapToObj(n -> new ResourceLocation(String.format("textures/blocks/destroy_stage_%d.png", n)))
-        .toArray(ResourceLocation[]::new);
+    private static final ResourceLocation[] DESTROY_STAGES = IntStream.range(0, 10).mapToObj(n -> new ResourceLocation(String.format("textures/blocks/destroy_stage_%d.png", n))).toArray(ResourceLocation[]::new);
 
 
 
@@ -48,7 +43,7 @@ public abstract class CarRenderer<E extends VehicleEntity> extends Render<E> {
         this.animator = createCarAnimator();
         texture = new ResourceLocation(JurassiCraft.MODID, "textures/entities/" + carName + "/" + carName + ".png");
         try {
-            TabulaModelContainer container = TabulaModelHelper.loadTabulaModel("/assets/jurassicraft/models/entities/" + carName + "/" + carName + ".tbl");
+        	TabulaModelContainer container = TabulaModelHelper.loadTabulaModel(new ResourceLocation(JurassiCraft.MODID, "models/entities/" + carName + "/" + carName));
             this.baseModel = new TabulaModel(container, animator);
             this.destroyModel = new TabulaModel(new TabulaModelUV(container, 16, 16), animator);
         } catch (Exception e) {

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jurassicraft.JurassiCraft;
+import org.jurassicraft.server.dinosaur.Dinosaur;
 import org.jurassicraft.server.entity.EntityHandler;
 import org.jurassicraft.server.entity.item.PaddockSignEntity;
 import org.lwjgl.opengl.GL11;
@@ -50,7 +51,9 @@ public class PaddockSignRenderer implements IRenderFactory<PaddockSignEntity> {
             ResourceLocation texture = this.TEXTURES.get(id);
 
             if (texture == null) {
-                texture = new ResourceLocation(JurassiCraft.MODID, "textures/paddock/" + EntityHandler.getDinosaurById(id).getName().toLowerCase(Locale.ENGLISH) + ".png");
+            	Dinosaur dinosaur = EntityHandler.getDinosaurById(id);
+                ResourceLocation identifier = dinosaur.getIdentifier();
+                texture = new ResourceLocation(identifier.getResourceDomain(), "textures/paddock/" + identifier.getResourcePath() + ".png");
                 this.TEXTURES.put(id, texture);
             }
 

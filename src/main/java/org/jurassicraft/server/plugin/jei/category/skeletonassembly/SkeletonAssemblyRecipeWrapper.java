@@ -24,7 +24,7 @@ public class SkeletonAssemblyRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        String[][] recipe = this.input.dinosaur.getRecipe();
+    	String[][] recipe = this.input.dinosaur.getMetadata().getRecipe();
         Map<String, FossilItem> fossils = this.input.fresh ? ItemHandler.FRESH_FOSSILS : ItemHandler.FOSSILS;
         int id = EntityHandler.getDinosaurId(this.input.dinosaur);
 
@@ -41,7 +41,7 @@ public class SkeletonAssemblyRecipeWrapper implements IRecipeWrapper {
         }
         ingredients.setInputs(ItemStack.class, inputs);
 
-        ItemStack output = new ItemStack(ItemHandler.DISPLAY_BLOCK, 1, DisplayBlockItem.getMetadata(id, this.input.fresh ? 2 : 1, true));
+        ItemStack output = new ItemStack(ItemHandler.DISPLAY_BLOCK_ITEM, 1, DisplayBlockItem.getMetadata(id, this.input.fresh ? 2 : 1, true));
         ingredients.setOutput(ItemStack.class, output);
     }
 

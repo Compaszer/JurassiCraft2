@@ -39,7 +39,7 @@ public class EmbryoCalcificationMachineBlockEntity extends MachineBaseBlockEntit
         if (!input.isEmpty() && input.getItem() instanceof SyringeItem && !egg.isEmpty() && egg.getItem() == Items.EGG) {
             Dinosaur dino = EntityHandler.getDinosaurById(input.getItemDamage());
 
-            if (dino.getBirthType() == Dinosaur.BirthType.EGG_LAYING) {
+            if (dino.getMetadata().getBirthType() == Dinosaur.BirthType.EGG_LAYING) {
                 ItemStack output = new ItemStack(ItemHandler.EGG, 1, input.getItemDamage());
                 output.setTagCompound(input.getTagCompound());
 
@@ -125,7 +125,7 @@ public class EmbryoCalcificationMachineBlockEntity extends MachineBaseBlockEntit
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
 		if (Ints.asList(INPUTS).contains(slotID)) {
-			if ((slotID == 0 && itemstack != null && itemstack.getItem() instanceof SyringeItem && SyringeItem.getDinosaur(itemstack).getBirthType() == BirthType.EGG_LAYING)
+			if ((slotID == 0 && itemstack != null && itemstack.getItem() instanceof SyringeItem && SyringeItem.getDinosaur(itemstack).getMetadata().getBirthType() == BirthType.EGG_LAYING)
 					|| slotID == 1 && itemstack != null && itemstack.getItem() == Items.EGG) {
 
 				return true;
