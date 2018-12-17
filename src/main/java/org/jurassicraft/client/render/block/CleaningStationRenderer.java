@@ -37,7 +37,7 @@ public class CleaningStationRenderer extends TileEntitySpecialRenderer<CleaningS
 			GlStateManager.translate(x + 0.5, y + 1.5F, z + 0.5);
 
 			GlStateManager.rotate(rotation, 0, 1, 0);
-			GlStateManager.translate(0.0, -1.1, -0.05);
+			GlStateManager.translate(0.0, -1.03, -0.05);
 			GlStateManager.scale(-scale, -scale, scale);
 			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
 

@@ -67,7 +67,9 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 	private boolean prevIsCleaning;
 
 	@SideOnly(Side.CLIENT)
-	public int cleaingRotation = 0;
+	public float cleaingRotation = 0;
+	@SideOnly(Side.CLIENT)
+	public float rotationAmount = 0;
 
 	@SideOnly(Side.CLIENT)
 	public static boolean isCleaning(IInventory inventory) {
@@ -520,21 +522,33 @@ public class CleaningStationBlockEntity extends TileEntityLockable implements IT
 			setField(2, fields.readInt());
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
-	public int getRenderCleaningRotation() {
-		if (this.isCleaning() && !Minecraft.getMinecraft().isGamePaused()) {
-			incrCleaningRotation();
+	public void updateRotation() {
+		if(!Minecraft.getMinecraft().isGamePaused()) {
+			
+			if(this.isCleaning()) {
+				this.rotationAmount += 0.002f;
+				this.rotationAmount *= 1.01f;
+			}else {
+				this.rotationAmount -= 0.01f;
+				this.rotationAmount *= 0.95f;
+			}
+			if (this.rotationAmount < 0f) {
+				this.rotationAmount = 0f;
+			}
+			if (this.rotationAmount > 1.2f) {
+				this.rotationAmount = 1.2f;
+			}
+			this.cleaingRotation += this.rotationAmount;
+			
 		}
-		return this.cleaingRotation;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void incrCleaningRotation() {
-		this.cleaingRotation++;
-		if (cleaingRotation > 360) {
-			cleaingRotation = 0;
-		}
+	public float getRenderCleaningRotation() {
+		updateRotation();
+		return this.cleaingRotation;
 	}
 
 }
