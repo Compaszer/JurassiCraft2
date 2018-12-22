@@ -221,14 +221,17 @@ public class HelicopterEntity extends VehicleEntity {
 				break;
 			}
 		}
-		if (this.world.isRemote) {
-			System.out.println("REMOVED");
-			EntityPlayerSP player = Minecraft.getMinecraft().player;
-			DummyCameraEntity dummyCamera = new DummyCameraEntity(Minecraft.getMinecraft(), this.world);
-			dummyCamera.setPosition(player.posX, player.posY, player.posZ);
-			this.world.spawnEntity(dummyCamera);
-			Minecraft.getMinecraft().setRenderViewEntity(dummyCamera);
-		}
+
+		// !!!DO NOT DELETE!!!
+		/*
+		 * if (this.world.isRemote) { System.out.println("REMOVED"); EntityPlayerSP
+		 * player = Minecraft.getMinecraft().player; DummyCameraEntity dummyCamera = new
+		 * DummyCameraEntity(Minecraft.getMinecraft(), this.world);
+		 * dummyCamera.setPosition(player.posX, player.posY, player.posZ);
+		 * this.world.spawnEntity(dummyCamera);
+		 * Minecraft.getMinecraft().setRenderViewEntity(dummyCamera); }
+		 */
+		//
 	}
 
 	@Override

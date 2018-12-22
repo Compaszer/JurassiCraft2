@@ -2,3 +2,4 @@
 *Vines are burnable and sound like vines again
 +Pushing/Pulling items with hoppers in JC machines is now supported
 *Fixed syncing issues of the cultivator
++Made the movement of the helicopter smoother
