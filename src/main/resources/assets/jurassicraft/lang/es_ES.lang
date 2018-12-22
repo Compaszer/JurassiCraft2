@@ -377,6 +377,9 @@ tile.cultivate.name=Cultivador {color}
 tile.cultivator.name=Cultivador
 
 tile.clear_glass.name=Cristal Transparente
+tile.clear_glass_pane.name=Panel De Vidrio Transparente
+tile.reinforced_glass.name=Cristal Reforzado
+tile.reinforced_glass_pane.name=Panel De Vidrio Reforzado
 
 tile.feeder.name=Comedero
 tile.bug_crate.name=Caja Granja de Insectos
