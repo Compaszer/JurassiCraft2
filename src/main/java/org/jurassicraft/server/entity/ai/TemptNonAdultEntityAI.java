@@ -10,7 +10,7 @@ public class TemptNonAdultEntityAI extends EntityAITempt {
     private DinosaurEntity dinosaur;
 
     public TemptNonAdultEntityAI(DinosaurEntity dinosaur, double speed) {
-        super(dinosaur, speed, !dinosaur.getDinosaur().getDiet().canEat(dinosaur, FoodType.MEAT), FoodHelper.getEdibleFoodItems(dinosaur, dinosaur.getDinosaur().getDiet()));
+    	super(dinosaur, speed, !dinosaur.getDinosaur().getMetadata().getDiet().canEat(dinosaur, FoodType.MEAT), FoodHelper.getEdibleFoodItems(dinosaur, dinosaur.getDinosaur().getMetadata().getDiet()));
         this.dinosaur = dinosaur;
         this.setMutexBits(Mutex.METABOLISM | Mutex.MOVEMENT);
     }

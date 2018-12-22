@@ -62,7 +62,7 @@ public class SkeletonAssemblyContainer extends Container {
     private ItemStack getResult() {
         AssemblyData data = this.getAssemblyData();
         if (data != null) {
-            String[][] recipe = data.dinosaur.getRecipe();
+        	String[][] recipe = data.dinosaur.getMetadata().getRecipe();
             int targetWidth = recipe[0].length;
             int targetHeight = recipe.length;
 
@@ -248,7 +248,7 @@ public class SkeletonAssemblyContainer extends Container {
 
         public ItemStack getResult() {
             int metadata = DisplayBlockItem.getMetadata(EntityHandler.getDinosaurId(this.dinosaur), this.fresh ? 2 : 1, true);
-            return new ItemStack(ItemHandler.DISPLAY_BLOCK, 1, metadata);
+            return new ItemStack(ItemHandler.DISPLAY_BLOCK_ITEM, 1, metadata);
         }
 
         @Override

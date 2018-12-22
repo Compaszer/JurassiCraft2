@@ -3,6 +3,7 @@ package org.jurassicraft.server.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.jurassicraft.server.dinosaur.Dinosaur;
 import org.jurassicraft.server.entity.DinosaurEntity;
@@ -13,7 +14,6 @@ import org.jurassicraft.server.plant.PlantHandler;
 
 import java.util.Locale;
 
-@SuppressWarnings("unused")
 public final class LangUtils
 {
     public static final TranslateKey COLORS = new TranslateKey("color.%s.name");
@@ -29,7 +29,6 @@ public final class LangUtils
     public static final TranslateKey ENTITY_DESC   = new TranslateKey("entity.%s.desc");
     public static final TranslateKey CONTAINER_INV = new TranslateKey("container.inventory");
 
-    @SuppressWarnings("deprecation")
     public static String translate(String langKey, Object... args) {
         return net.minecraft.util.text.translation.I18n.canTranslate(langKey)
                        ? net.minecraft.util.text.translation.I18n.translateToLocalFormatted(langKey, args)
@@ -40,7 +39,6 @@ public final class LangUtils
         return translate(langKey.key, args);
     }
 
-    @SuppressWarnings("deprecation")
     public static String translateOrDefault(String langKey, String defaultVal) {
         return net.minecraft.util.text.translation.I18n.canTranslate(langKey) ? translate(langKey) : defaultVal;
     }
@@ -76,11 +74,13 @@ public final class LangUtils
     }
 
     public static String getDinoName(Dinosaur dinosaur) {
-        return translate(LangUtils.ENTITY_NAME.get("jurassicraft." + dinosaur.getName().replace(" ", "_").toLowerCase(Locale.ENGLISH)));
+    	ResourceLocation identifier = dinosaur.getIdentifier();
+        return translate(LangUtils.ENTITY_NAME.get(identifier.getResourceDomain() + "." + identifier.getResourcePath()));
     }
 
     public static String getDinoInfo(Dinosaur dinosaur) {
-        return translate("info." + dinosaur.getName().replace(" ", "_").toLowerCase(Locale.ENGLISH) + ".name");
+        ResourceLocation identifier = dinosaur.getIdentifier();
+        return translate("info." + identifier.getResourceDomain() + "." + identifier.getResourcePath() + ".name");
     }
 
     public static String getAttractionSignName(ItemStack stack) {

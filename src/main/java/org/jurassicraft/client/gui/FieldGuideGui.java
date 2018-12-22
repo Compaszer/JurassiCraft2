@@ -117,7 +117,7 @@ public class FieldGuideGui extends GuiScreen {
             this.drawBar(statisticsX, y + 45, this.entity.isCarcass() ? 0 : this.entity.getHealth(), this.entity.getMaxHealth(), 0xFF0000);
             this.drawBar(statisticsX, y + 75, this.fieldGuideInfo.hunger, this.entity.getMetabolism().getMaxEnergy(), 0x94745A);
             this.drawBar(statisticsX, y + 105, this.fieldGuideInfo.thirst, this.entity.getMetabolism().getMaxWater(), 0x0000FF);
-            this.drawBar(statisticsX, y + 135, this.entity.getDinosaurAge(), dinosaur.getMaximumAge(), 0x00FF00);
+            this.drawBar(statisticsX, y + 135, this.entity.getDinosaurAge(), dinosaur.getMetadata().getMaximumAge(), 0x00FF00);
 
             this.drawCenteredScaledString(LangUtils.translate(LangUtils.GUI.get("days_old")).replace("{value}", String.valueOf(this.entity.getDaysExisted())), statisticTextX, y + 155, 1.0F, 0);
 
@@ -125,7 +125,7 @@ public class FieldGuideGui extends GuiScreen {
 
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GL11.glScissor((x + 15) * scaleFactor, (this.height - y - 140) * scaleFactor, 100 * scaleFactor, 100 * scaleFactor);
-            this.drawEntity(x + 65, y + 110, 45.0F / this.entity.height, this.entity);
+            this.drawEntity(x + 65, y + 110, 45.0F / (this.entity.height + (this.entity.getEyeHeight() > 15 ? this.entity.getEyeHeight() / 2 : 0)), this.entity);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

@@ -1,6 +1,7 @@
 package org.jurassicraft.client.render.entity.dinosaur;
 
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModel;
+import net.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -17,67 +18,61 @@ import org.jurassicraft.server.entity.DinosaurEntity;
 import org.jurassicraft.server.entity.GrowthStage;
 import org.jurassicraft.server.tabula.TabulaModelHelper;
 
+import java.io.IOException;
+import java.util.EnumMap;
 import java.util.Locale;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class DinosaurRenderInfo implements IRenderFactory<DinosaurEntity> {
+	
     private static TabulaModel DEFAULT_EGG_MODEL;
     private static ResourceLocation DEFAULT_EGG_TEXTURE;
-
+    private final Map<GrowthStage, AnimatableModel> animatableModels = new EnumMap<>(GrowthStage.class);
+    private final Dinosaur dinosaur;
+    private final EntityAnimator<?> animator;
+    private TabulaModel eggModel;
+    private ResourceLocation eggTexture;
+    private float shadowSize = 0.65F;
+    
     static {
         try {
-            DEFAULT_EGG_MODEL = new TabulaModel(TabulaModelHelper.loadTabulaModel("/assets/jurassicraft/models/entities/egg/tyrannosaurus"));
+        	DEFAULT_EGG_MODEL = new TabulaModel(TabulaModelHelper.loadTabulaModel(new ResourceLocation(JurassiCraft.MODID, "models/entities/egg/tyrannosaurus")));
             DEFAULT_EGG_TEXTURE = new ResourceLocation(JurassiCraft.MODID, "textures/entities/egg/tyrannosaurus.png");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private final Dinosaur dinosaur;
-    private final EntityAnimator<?> animator;
-    private final AnimatableModel modelAdult;
-    private final AnimatableModel modelInfant;
-    private final AnimatableModel modelJuvenile;
-    private final AnimatableModel modelAdolescent;
-    private final AnimatableModel modelSkeleton;
-    private TabulaModel eggModel;
-    private ResourceLocation eggTexture;
-    private float shadowSize = 0.65F;
-
     public DinosaurRenderInfo(Dinosaur dinosaur, EntityAnimator<?> animator, float shadowSize) {
+    	
         this.dinosaur = dinosaur;
         this.animator = animator;
         this.shadowSize = shadowSize;
-
-        this.modelAdult = this.loadModel(GrowthStage.ADULT);
-        this.modelInfant = this.loadModel(GrowthStage.INFANT);
-        this.modelJuvenile = this.loadModel(GrowthStage.JUVENILE);
-        this.modelAdolescent = this.loadModel(GrowthStage.ADOLESCENT);
-        this.modelSkeleton = this.loadModel(GrowthStage.SKELETON);
+        
+        for(GrowthStage stage : this.dinosaur.getSupportedStages()) {
+        	this.animatableModels.put(stage, new AnimatableModel(this.dinosaur.getModelContainer(stage), this.getModelAnimator(stage)));
+        }
 
         try {
-            String name = dinosaur.getName().toLowerCase(Locale.ENGLISH);
-            this.eggModel = new TabulaModel(TabulaModelHelper.loadTabulaModel("/assets/jurassicraft/models/entities/egg/" + name));
-            this.eggTexture = new ResourceLocation(JurassiCraft.MODID, "textures/entities/egg/" + name + ".png");
-        } catch (Exception e) {
+        	
+            ResourceLocation identifier = dinosaur.getIdentifier();
+            String domain = identifier.getResourceDomain();
+            String path = identifier.getResourcePath();
+            this.eggModel = new TabulaModel(TabulaModelHelper.loadTabulaModel(new ResourceLocation(domain, "models/entities/egg/" + path)));
+            this.eggTexture = new ResourceLocation(domain, "textures/entities/egg/" + path + ".png");
+        } catch (NullPointerException | IllegalArgumentException | IOException e) {
             this.eggModel = DEFAULT_EGG_MODEL;
             this.eggTexture = DEFAULT_EGG_TEXTURE;
         }
     }
 
     public ModelBase getModel(GrowthStage stage) {
-        switch (stage) {
-            case INFANT:
-                return this.modelInfant;
-            case JUVENILE:
-                return this.modelJuvenile;
-            case ADOLESCENT:
-                return this.modelAdolescent;
-            case SKELETON:
-                return this.modelSkeleton;
-            default:
-                return this.modelAdult;
-        }
+    	
+    	if (!this.dinosaur.doesSupportGrowthStage(stage)) 
+    		return this.getModelAdult();
+    	
+    	return getModelAdult();
     }
 
     public ModelBase getEggModel() {
@@ -99,13 +94,6 @@ public class DinosaurRenderInfo implements IRenderFactory<DinosaurEntity> {
         return this.shadowSize;
     }
 
-    public AnimatableModel loadModel(GrowthStage stage) {
-        if (!this.dinosaur.doesSupportGrowthStage(stage)) {
-            return this.getModelAdult();
-        }
-        return new AnimatableModel(this.dinosaur.getModelContainer(stage), this.getModelAnimator(stage));
-    }
-
     public Dinosaur getDinosaur() {
         return this.dinosaur;
     }
@@ -116,6 +104,6 @@ public class DinosaurRenderInfo implements IRenderFactory<DinosaurEntity> {
     }
 
     public AnimatableModel getModelAdult() {
-        return this.modelAdult;
+        return this.animatableModels.get(GrowthStage.ADULT);
     }
 }

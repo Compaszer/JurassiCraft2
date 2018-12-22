@@ -31,6 +31,7 @@ import org.jurassicraft.server.block.BlockHandler;
 import org.jurassicraft.server.container.CleaningStationContainer;
 import org.jurassicraft.server.container.CultivateContainer;
 import org.jurassicraft.server.dinosaur.Dinosaur;
+import org.jurassicraft.server.dinosaur.DinosaurMetadata;
 import org.jurassicraft.server.entity.DinosaurEntity;
 import org.jurassicraft.server.entity.EntityHandler;
 import org.jurassicraft.server.food.FoodNutrients;
@@ -62,7 +63,7 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
     private int minerals;
     private int vitamins;
     private int temperature;
-    private boolean isActive = false;
+    private boolean prevActiveState = false;
 
     private DinosaurEntity dinosaurEntity; //Used for rendering entities
 
@@ -76,8 +77,12 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
     	ItemStack itemstack = this.slots.get(0);
         if (itemstack.getItem() == ItemHandler.SYRINGE && this.waterLevel == 2) {
             Dinosaur dino = EntityHandler.getDinosaurById(itemstack.getItemDamage());
-            if (dino != null && dino.getBirthType() == Dinosaur.BirthType.LIVE_BIRTH) {
-                return this.lipids >= dino.getLipids() && this.minerals >= dino.getMinerals() && this.proximates >= dino.getProximates() && this.vitamins >= dino.getVitamins();
+            if (dino == null) {
+                return false;
+            }
+            DinosaurMetadata meta = dino.getMetadata();
+            if (meta.getBirthType() == Dinosaur.BirthType.LIVE_BIRTH) {
+                return this.lipids >= meta.getLipids() && this.minerals >= meta.getMinerals() && this.proximates >= meta.getProximates() && this.vitamins >= meta.getVitamins();
             }
         }
         return false;
@@ -106,10 +111,11 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
         Dinosaur dinosaur = EntityHandler.getDinosaurById(syringe.getItemDamage());
 
         if (dinosaur != null) {
-            this.lipids -= dinosaur.getLipids();
-            this.minerals -= dinosaur.getMinerals();
-            this.vitamins -= dinosaur.getVitamins();
-            this.proximates -= dinosaur.getProximates();
+        	DinosaurMetadata metadata = dinosaur.getMetadata();
+            this.lipids -= metadata.getLipids();
+            this.minerals -= metadata.getMinerals();
+            this.vitamins -= metadata.getVitamins();
+            this.proximates -= metadata.getProximates();
             this.waterLevel--;
 
             ItemStack hatchedEgg = new ItemStack(ItemHandler.HATCHED_EGG, 1, syringe.getItemDamage());
@@ -162,8 +168,8 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
             
             boolean active = this.isProcessing(0);
             boolean syncActive = false;
-            if(active != isActive) {
-            	isActive = active;
+            if(active != prevActiveState) {
+            	prevActiveState = active;
             	syncActive = true;
             	
             	
@@ -323,14 +329,11 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
 	}
 
     private DinosaurEntity createEntity() {
-        try {
-            this.dinosaurEntity = EntityHandler.getDinosaurById(this.getStackInSlot(0).getMetadata()).getDinosaurClass().getDeclaredConstructor(World.class).newInstance(this.world);
-            this.dinosaurEntity.setMale(this.temperature > 50);
-            this.dinosaurEntity.setFullyGrown();
-            this.dinosaurEntity.getAttributes().setScaleModifier(1f);
-        } catch (ReflectiveOperationException e){
-            throw new RuntimeException("Unable to create dinosaur entity", e);
-        }
+    	Dinosaur dinosaur = EntityHandler.getDinosaurById(this.getStackInSlot(0).getMetadata());
+        this.dinosaurEntity = dinosaur.construct(this.world);
+        this.dinosaurEntity.setMale(this.temperature > 50);
+        this.dinosaurEntity.setFullyGrown();
+        this.dinosaurEntity.getAttributes().setScaleModifier(1f);
         return dinosaurEntity;
     }
 
@@ -490,7 +493,7 @@ public class CultivatorBlockEntity extends MachineBaseBlockEntity implements Tem
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
 		if(!this.handler.isUp && !this.isProcessing(0)) {
 		if (Ints.asList(INPUTS).contains(slotID)) {
-			if ((slotID == 0 && itemstack != null && this.getStackInSlot(slotID).getCount() == 0 && itemstack.getItem() instanceof SyringeItem && SyringeItem.getDinosaur(itemstack).getBirthType() == Dinosaur.BirthType.LIVE_BIRTH)
+			if ((slotID == 0 && itemstack != null && this.getStackInSlot(slotID).getCount() == 0 && itemstack.getItem() instanceof SyringeItem && SyringeItem.getDinosaur(itemstack).getMetadata().getBirthType() == Dinosaur.BirthType.LIVE_BIRTH)
 					|| (slotID == 1 && itemstack != null && FoodNutrients.NUTRIENTS.containsKey(itemstack.getItem()))
 					|| (slotID == 2 && itemstack != null && CleaningStationBlockEntity.isItemFuel(itemstack))) {
 

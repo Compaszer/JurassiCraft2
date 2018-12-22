@@ -140,7 +140,7 @@ public class EncasedFossilBlock extends Block implements SubBlocksBlock, Cleanab
     @Override
     public ItemStack getCleanedItem(ItemStack stack, Random random) {
         int dinosaurId = BlockHandler.getDinosaurId((EncasedFossilBlock) Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
-        String[] bones = EntityHandler.getDinosaurById(dinosaurId).getBones();
+        String[] bones = EntityHandler.getDinosaurById(dinosaurId).getMetadata().getBones();
         return new ItemStack(ItemHandler.FOSSILS.get(bones[random.nextInt(bones.length)]), 1, dinosaurId);
     }
 
@@ -154,7 +154,7 @@ public class EncasedFossilBlock extends Block implements SubBlocksBlock, Cleanab
     @Override
     public List<Pair<Float, ItemStack>> getChancedOutputs(ItemStack inputItem) {
         int dinosaurId = BlockHandler.getDinosaurId((EncasedFossilBlock) Block.getBlockFromItem(inputItem.getItem()), inputItem.getItemDamage());
-        String[] bones = EntityHandler.getDinosaurById(dinosaurId).getBones();
+        String[] bones = EntityHandler.getDinosaurById(dinosaurId).getMetadata().getBones();
         float single = 100F / bones.length;
 
         List<Pair<Float, ItemStack>> list = Lists.newArrayList();

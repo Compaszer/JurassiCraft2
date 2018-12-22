@@ -5,7 +5,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.jurassicraft.client.sound.SoundHandler;
 import org.jurassicraft.server.api.Hybrid;
@@ -16,14 +19,13 @@ import org.jurassicraft.server.dinosaur.Dinosaur;
 import org.jurassicraft.server.entity.DinosaurEntity;
 import org.jurassicraft.server.entity.EntityHandler;
 import org.jurassicraft.server.item.block.AncientDoorItem;
-//import org.jurassicraft.server.item.vehicles.HelicopterItem;
-//import org.jurassicraft.server.item.vehicles.HelicopterModuleItem;
 import org.jurassicraft.server.item.vehicles.HelicopterItem;
 import org.jurassicraft.server.tab.TabHandler;
 import org.jurassicraft.server.util.RegistryHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
@@ -33,6 +35,7 @@ import net.minecraft.item.ItemSeedFood;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.oredict.OreDictionary;
@@ -77,6 +80,7 @@ public class ItemHandler {
 
     public static final Item GROWTH_SERUM = new EntityRightClickItem(interaction -> {
             if (interaction.getTarget() instanceof DinosaurEntity) {
+            	if(!JurassiCraftConfig.ITEMS.disableGrowthSerum) {
                 DinosaurEntity dinosaur = (DinosaurEntity) interaction.getTarget();
                 if (!dinosaur.isCarcass()) {
                     dinosaur.setFullyGrown();
@@ -86,6 +90,15 @@ public class ItemHandler {
                     }
                     return true;
                 }
+            	}else {
+            		if(!interaction.getTarget().world.isRemote) {
+            			EntityPlayerMP player = (EntityPlayerMP) interaction.getPlayer();
+            			TextComponentTranslation growthTranslation = new TextComponentTranslation("item.growth_serum.denied");
+            			growthTranslation.getStyle().setColor(TextFormatting.RED);
+                        player.connection.sendPacket(new SPacketChat(growthTranslation, ChatType.GAME_INFO));
+            		}
+            		return false;
+            	}
             }
 	return false;
     }).setCreativeTab(TabHandler.ITEMS);
@@ -138,7 +151,7 @@ public class ItemHandler {
     public static final AncientRecordItem TROODONS_AND_RAPTORS_DISC = new AncientRecordItem("troodons_and_raptors", SoundHandler.TROODONS_AND_RAPTORS);
     public static final AncientRecordItem DONT_MOVE_A_MUSCLE_DISC = new AncientRecordItem("dont_move_a_muscle", SoundHandler.DONT_MOVE_A_MUSCLE);
 
-    public static final DisplayBlockItem DISPLAY_BLOCK = new DisplayBlockItem();
+    public static final DisplayBlockItem DISPLAY_BLOCK_ITEM = new DisplayBlockItem();
 
     public static final BasicItem AMBER_KEYCHAIN = new BasicItem(TabHandler.DECORATIONS);
     public static final BasicItem AMBER_CANE = new BasicItem(TabHandler.DECORATIONS);
@@ -289,7 +302,7 @@ public class ItemHandler {
         for (Map.Entry<Integer, Dinosaur> entry : EntityHandler.getDinosaurs().entrySet()) {
             Dinosaur dinosaur = entry.getValue();
 
-            String[] boneTypes = dinosaur.getBones();
+            String[] boneTypes = dinosaur.getMetadata().getBones();
 
             for (String boneType : boneTypes) {
                 if (!(dinosaur instanceof Hybrid)) {
@@ -315,9 +328,7 @@ public class ItemHandler {
         registerItem(PLASTER_AND_BANDAGE, "Plaster And Bandage");
         registerItem(EMPTY_TEST_TUBE, "Empty Test Tube");
         registerItem(EMPTY_SYRINGE, "Empty Syringe");
-        if(!JurassiCraftConfig.ENTITIES.disableGrowthSerumRecipe && !Minecraft.getMinecraft().world.isRemote)
-            registerItem(GROWTH_SERUM, "Growth Serum");
-
+        registerItem(GROWTH_SERUM, "Growth Serum");
         registerItem(BREEDING_WAND, "Breeding Wand");
         registerItem(BIRTHING_WAND, "Birthing_Wand");
         registerItem(PREGNANCY_TEST, "Pregnancy Test");
@@ -362,7 +373,7 @@ public class ItemHandler {
         registerItem(AMBER_KEYCHAIN, "Amber Keychain");
         registerItem(MR_DNA_KEYCHAIN, "Mr DNA Keychain");
 
-        registerItem(DISPLAY_BLOCK, "Display Block Item");
+        registerItem(DISPLAY_BLOCK_ITEM, "Display Block Item");
 
        registerItem(DINO_SCANNER, "Dino Scanner");
 

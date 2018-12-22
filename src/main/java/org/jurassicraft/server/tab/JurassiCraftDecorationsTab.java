@@ -26,6 +26,6 @@ public class JurassiCraftDecorationsTab extends CreativeTabs {
 
     @Override
     public ItemStack getTabIconItem() {
-        return new ItemStack(ItemHandler.DISPLAY_BLOCK);
+        return new ItemStack(ItemHandler.DISPLAY_BLOCK_ITEM);
     }
 }

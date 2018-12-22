@@ -45,7 +45,7 @@ public class FossilItem extends Item implements GrindableItem {
 
     public static void init() {
         for (Dinosaur dinosaur : EntityHandler.getDinosaurs().values()) {
-            String[] boneTypes = dinosaur.getBones();
+        	String[] boneTypes = dinosaur.getMetadata().getBones();
 
             for (String boneType : boneTypes) {
             	

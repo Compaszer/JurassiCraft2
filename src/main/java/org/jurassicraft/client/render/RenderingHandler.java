@@ -29,6 +29,7 @@ import org.jurassicraft.server.block.tree.AncientLeavesBlock;
 import org.jurassicraft.server.block.tree.TreeType;
 import org.jurassicraft.server.conf.JurassiCraftConfig;
 import org.jurassicraft.server.dinosaur.Dinosaur;
+import org.jurassicraft.server.dinosaur.DinosaurMetadata;
 import org.jurassicraft.server.entity.EntityHandler;
 import org.jurassicraft.server.entity.GoatEntity;
 import org.jurassicraft.server.entity.TranquilizerDartEntity;
@@ -346,9 +347,9 @@ public enum RenderingHandler {
 
         for (Dinosaur dinosaur : EntityHandler.getDinosaurs().values()) {
             int meta = EntityHandler.getDinosaurId(dinosaur);
-
-            String formattedName = dinosaur.getName().toLowerCase(Locale.ENGLISH).replaceAll(" ", "_");
-
+            String formattedName = dinosaur.getIdentifier().getResourcePath();
+            registerItemRenderer(DISPLAY_BLOCK_ITEM, DISPLAY_BLOCK_ITEM.getMetadata(meta, 0, false), "action_figure/action_figure_" + formattedName);
+          
             for (Map.Entry<String, FossilItem> entry : ItemHandler.FOSSILS.entrySet()) {
                 List<Dinosaur> dinosaursForType = FossilItem.fossilDinosaurs.get(entry.getKey());
                 if (dinosaursForType.contains(dinosaur)) {
@@ -368,9 +369,8 @@ public enum RenderingHandler {
             registerItemRenderer(DINOSAUR_STEAK, meta, "meat/steak_" + formattedName);
             registerItemRenderer(SOFT_TISSUE, meta, "soft_tissue/soft_tissue_" + formattedName);
             registerItemRenderer(SYRINGE, meta, "syringe/syringe_" + formattedName);
-            //registerItemRenderer(ACTION_FIGURE, meta, "action_figure/action_figure_" + formattedName);
 
-            if (!dinosaur.givesDirectBirth()) {
+            if (!dinosaur.getMetadata().givesDirectBirth()) {
                 registerItemRenderer(EGG, meta, "egg/egg_" + formattedName);
             }
 
@@ -432,7 +432,7 @@ public enum RenderingHandler {
 
     public void preInit() {
         TabulaModelHandler.INSTANCE.addDomain(JurassiCraft.MODID);
-        ItemHandler.DISPLAY_BLOCK.initModels(EntityHandler.getDinosaurs().values(), this);
+        ItemHandler.DISPLAY_BLOCK_ITEM.initModels(EntityHandler.getDinosaurs().values(), this);
 
         registerRenderInfo(EntityHandler.BRACHIOSAURUS, new BrachiosaurusAnimator(), 1.5F);
         registerRenderInfo(EntityHandler.COELACANTH, new CoelacanthAnimator(), 0.0F);
@@ -484,14 +484,15 @@ public enum RenderingHandler {
             DinosaurSpawnEggItem item = (DinosaurSpawnEggItem) stack.getItem();
             Dinosaur dino = item.getDinosaur(stack);
             if (dino != null) {
+            	DinosaurMetadata metadata = dino.getMetadata();
                 int mode = item.getMode(stack);
                 if (mode == 0) {
                     mode = JurassiCraft.timerTicks % 64 > 32 ? 1 : 2;
                 }
                 if (mode == 1) {
-                    return tintIndex == 0 ? dino.getEggPrimaryColorMale() : dino.getEggSecondaryColorMale();
+                	return tintIndex == 0 ? metadata.getEggPrimaryColorMale() : metadata.getEggSecondaryColorMale();
                 } else {
-                    return tintIndex == 0 ? dino.getEggPrimaryColorFemale() : dino.getEggSecondaryColorFemale();
+                	return tintIndex == 0 ? metadata.getEggPrimaryColorFemale() : metadata.getEggSecondaryColorFemale();
                 }
             }
             return 0xFFFFFF;
@@ -539,12 +540,13 @@ public enum RenderingHandler {
         registerRenderInfo(new DinosaurRenderInfo(dinosaur, animator, shadowSize));
     }
 
-    private static void registerRenderInfo(DinosaurRenderInfo renderDef) {
-        renderInfos.put(renderDef.getDinosaur(), renderDef);
-        RenderingRegistry.registerEntityRenderingHandler(renderDef.getDinosaur().getDinosaurClass(), renderDef);
+    private static void registerRenderInfo(DinosaurRenderInfo renderInfo) {
+        renderInfos.put(renderInfo.getDinosaur(), renderInfo);
+        DinosaurMetadata metadata = renderInfo.getDinosaur().getMetadata();
+        RenderingRegistry.registerEntityRenderingHandler(metadata.getDinosaurClass(), renderInfo);
     }
 
     public DinosaurRenderInfo getRenderInfo(Dinosaur dino) {
-        return this.renderInfos.get(dino);
+        return renderInfos.get(dino);
     }
 }

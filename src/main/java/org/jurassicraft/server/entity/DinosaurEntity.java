@@ -65,6 +65,7 @@ import org.jurassicraft.server.block.machine.FeederBlock;
 import org.jurassicraft.server.conf.JurassiCraftConfig;
 import org.jurassicraft.server.damage.DinosaurDamageSource;
 import org.jurassicraft.server.dinosaur.Dinosaur;
+import org.jurassicraft.server.dinosaur.DinosaurMetadata;
 import org.jurassicraft.server.entity.ai.AdvancedSwimEntityAI;
 import org.jurassicraft.server.entity.ai.AssistOwnerEntityAI;
 import org.jurassicraft.server.entity.ai.DefendOwnerEntityAI;
@@ -224,7 +225,8 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
         this.animationTasks = new EntityAITasks(world.profiler);
 
-        if (!this.dinosaur.isMarineCreature()) {
+        DinosaurMetadata metadata = this.dinosaur.getMetadata();
+        if (!metadata.isMarineCreature()) {
             this.tasks.addTask(0, new AdvancedSwimEntityAI(this));
 //            this.setPathPriority(PathNodeType.WATER, 0.0F);
         }
@@ -233,11 +235,11 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
         
         this.tasks.addTask(0, new DinosaurWanderAvoidWater(this, 0.8D));
         
-        if (this.dinosaur.getDiet().canEat(this, FoodType.PLANT)) {
+        if (metadata.getDiet().canEat(this, FoodType.PLANT)) {
             this.tasks.addTask(1, new GrazeEntityAI(this));
         }
 
-        if (this.dinosaur.getDiet().canEat(this, FoodType.MEAT)) {
+        if (metadata.getDiet().canEat(this, FoodType.MEAT)) {
             this.tasks.addTask(1, new TargetCarcassEntityAI(this));
         }
         
@@ -248,12 +250,12 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
         this.tasks.addTask(1, new EntityAIPanic(this, 1.25D));
 
-        if (this.dinosaur.shouldDefendOwner()) {
+        if (metadata.shouldDefendOwner()) {
             this.tasks.addTask(2, new DefendOwnerEntityAI(this));
             this.tasks.addTask(2, new AssistOwnerEntityAI(this));
         }
 
-        if (this.dinosaur.shouldFlee()) {
+        if (metadata.shouldFlee()) {
             this.tasks.addTask(2, new FleeEntityAI(this));
         }
 
@@ -311,7 +313,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
         if (this.metabolism.isDehydrated() || this.metabolism.isStarving()) {
             return false;
         }
-        SleepTime sleepTime = this.getDinosaur().getSleepTime();
+        SleepTime sleepTime = this.getMetadata().getSleepTime();
         return sleepTime.shouldSleep() && this.getDinosaurTime() > sleepTime.getAwakeTime() && !this.hasPredators() && (this.herd == null || this.herd.enemies.isEmpty());
     }
 
@@ -341,7 +343,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public int getDinosaurTime() {
-        SleepTime sleepTime = this.getDinosaur().getSleepTime();
+    	SleepTime sleepTime = this.getMetadata().getSleepTime();
 
         long time = (this.world.getWorldTime() % 24000) - sleepTime.getWakeUpTime();
 
@@ -367,7 +369,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public void setOwner(EntityPlayer player) {
-        if (this.dinosaur.isImprintable()) {
+    	if (this.getMetadata().isImprintable()) {
             UUID prevOwner = this.owner;
             this.owner = player.getUniqueID();
 
@@ -611,9 +613,10 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public void updateAttributes() {
+    	DinosaurMetadata metadata = this.getMetadata();
         double prevHealth = this.getMaxHealth();
-        double newHealth = Math.max(1.0F, this.interpolate(this.dinosaur.getBabyHealth(), this.dinosaur.getAdultHealth()) * this.attributes.getHealthModifier());
-        double speed = this.interpolate(this.dinosaur.getBabySpeed(), this.dinosaur.getAdultSpeed()) * this.attributes.getSpeedModifier();
+        double newHealth = Math.max(1.0F, this.interpolate(metadata.getBabyHealth(), metadata.getAdultHealth()) * this.attributes.getHealthModifier());
+        double speed = this.interpolate(metadata.getBabySpeed(), metadata.getAdultSpeed()) * this.attributes.getSpeedModifier();
         double strength = this.getAttackDamage() * this.attributes.getDamageModifier();
 
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(newHealth);
@@ -629,9 +632,10 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     private void updateBounds() {
+    	DinosaurMetadata metadata = this.getMetadata();
         float scale = this.attributes.getScaleModifier();
-        float width = MathHelper.clamp((float) this.interpolate(this.dinosaur.getBabySizeX(), this.dinosaur.getAdultSizeX()) * scale, 0.3F, 4.0F);
-        float height = MathHelper.clamp((float) this.interpolate(this.dinosaur.getBabySizeY(), this.dinosaur.getAdultSizeY()) * scale, 0.3F, 4.0F);
+        float width = MathHelper.clamp((float) this.interpolate(metadata.getBabySizeX(), metadata.getAdultSizeX()) * scale, 0.3F, 4.0F);
+        float height = MathHelper.clamp((float) this.interpolate(metadata.getBabySizeY(), metadata.getAdultSizeY()) * scale, 0.3F, 4.0F);
 
         this.stepHeight = Math.max(1.0F, (float) (Math.ceil(height / 2.0F) / 2.0F));
 
@@ -644,7 +648,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
     public double interpolate(double baby, double adult) {
         int dinosaurAge = this.dinosaurAge;
-        int maxAge = this.dinosaur.getMaximumAge();
+        int maxAge = this.getMetadata().getMaximumAge();
         if (dinosaurAge > maxAge) {
             dinosaurAge = maxAge;
         }
@@ -705,7 +709,8 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
             this.breedCooldown--;
         }
         
-        if(!this.world.isRemote && this.dinosaur.getDiet().canEat(this, FoodType.MEAT) && this.getMetabolism().isHungry()) {
+        DinosaurMetadata metadata = this.getMetadata();
+        if(!this.world.isRemote && metadata.getDiet().canEat(this, FoodType.MEAT) && this.getMetabolism().isHungry()) {
             world.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().grow(10, 10, 10), this::canEatEntity).stream().findAny().ifPresent(this::setAttackTarget);
         }
         
@@ -713,7 +718,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
             if (this.isPregnant()) {
                 if (--this.pregnantTime <= 0) {
                     this.navigator.clearPath();
-                    this.setAnimation(this.dinosaur.givesDirectBirth() ? EntityAnimation.GIVING_BIRTH.get() : EntityAnimation.LAYING_EGG.get());
+                    this.setAnimation(metadata.givesDirectBirth() ? EntityAnimation.GIVING_BIRTH.get() : EntityAnimation.LAYING_EGG.get());
                     if(this.family != null) {
                         this.family.setHome(this.getPosition(), 6000);
                     }
@@ -723,7 +728,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
             if ((this.getAnimation() == EntityAnimation.LAYING_EGG.get() || this.getAnimation() == EntityAnimation.GIVING_BIRTH.get()) && this.animationTick == this.getAnimationLength() / 2) {
         	    for (DinosaurEntity child : this.children) {
                     Entity entity;
-                    if (this.dinosaur.givesDirectBirth()) {
+                    if (metadata.givesDirectBirth()) {
                         entity = child;
                         child.setAge(0);
                         if(this.family != null) {
@@ -745,10 +750,10 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
             boolean dead = this.breeding.isDead || this.breeding.isCarcass();
             if (dead || this.getEntityBoundingBox().intersects(this.breeding.getEntityBoundingBox().expand(3, 3, 3))) {
                 if (!dead) {
-                    this.breedCooldown = this.dinosaur.getBreedCooldown();
+                	this.breedCooldown = metadata.getBreedCooldown();
                     if (!this.isMale()) {
-                        int minClutch = this.dinosaur.getMinClutch();
-                        int maxClutch = this.dinosaur.getMaxClutch();
+                    	int minClutch = metadata.getMinClutch();
+                        int maxClutch = metadata.getMaxClutch();
                         for (int i = 0; i < this.rand.nextInt(maxClutch - minClutch) + minClutch; i++) {
                             try {
                                 DinosaurEntity child = this.getClass().getConstructor(World.class).newInstance(this.world);
@@ -804,7 +809,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                     List<EntityItem> entitiesWithinAABB = this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().expand(1.0, 1.0, 1.0));
                     for (EntityItem itemEntity : entitiesWithinAABB) {
                         Item item = itemEntity.getItem().getItem();
-                        if (FoodHelper.isEdible(this, this.dinosaur.getDiet(), item)) {
+                        if (FoodHelper.isEdible(this, metadata.getDiet(), item)) {
                             this.setAnimation(EntityAnimation.EATING.get());
 
                             if (itemEntity.getItem().getCount() > 1) {
@@ -829,7 +834,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                 this.playSound(this.getBreathingSound(), this.getSoundVolume(), this.getSoundPitch());
             }
 
-            if (!this.dinosaur.isMarineCreature()) {
+            if (!metadata.isMarineCreature()) {
                 if (this.isInsideOfMaterial(Material.WATER) || (this.getNavigator().noPath() && this.inWater() || this.inLava())) {
                     this.getJumpHelper().setJumping();
                 } else {
@@ -1103,7 +1108,8 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
         }
 
         if (this.legSolver != null) {
-            double msc = this.dinosaur.getScaleInfant() / this.dinosaur.getScaleAdult();
+        	DinosaurMetadata metadata = this.getMetadata();
+            double msc = metadata.getScaleInfant() / metadata.getScaleAdult();
             this.legSolver.update(this, (float) this.interpolate(msc, 1.0) * this.getAttributes().getScaleModifier());
         }
 
@@ -1132,7 +1138,11 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public void setFullyGrown() {
-        this.setAge(this.dinosaur.getMaximumAge());
+    	this.setAge(this.getMetadata().getMaximumAge());
+    }
+    
+    public DinosaurMetadata getMetadata() {
+        return this.getDinosaur().getMetadata();
     }
 
     public Dinosaur getDinosaur() {
@@ -1157,12 +1167,13 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
     @Override
     public float getEyeHeight() {
-        return (float) this.interpolate(this.dinosaur.getBabyEyeHeight(), this.dinosaur.getAdultEyeHeight()) * this.attributes.getScaleModifier();
+    	DinosaurMetadata metadata = this.getMetadata();
+        return (float) this.interpolate(metadata.getBabyEyeHeight(), metadata.getAdultEyeHeight()) * this.attributes.getScaleModifier();
     }
 
     @Override
     protected void dropFewItems(boolean playerAttack, int looting) {
-        for (String bone : this.dinosaur.getBones()) {
+    	for (String bone : this.getMetadata().getBones()) {
             if (this.rand.nextInt(10) != 0) {
                 this.dropStackWithGenetics(new ItemStack(ItemHandler.FRESH_FOSSILS.get(bone), 1, EntityHandler.getDinosaurId(this.dinosaur)));
             }
@@ -1236,7 +1247,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                         fed = true;
                         this.metabolism.increaseWater(1000);
                         this.setAnimation(EntityAnimation.DRINKING.get());
-                    } else if (FoodHelper.isEdible(this, this.dinosaur.getDiet(), item)) {
+                    } else if (FoodHelper.isEdible(this, this.getMetadata().getDiet(), item)) {
                         fed = true;
                         this.metabolism.eat(FoodHelper.getHealAmount(item));
                         this.setAnimation(EntityAnimation.EATING.get());
@@ -1251,13 +1262,13 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                         }
                         if (!this.isOwner(player)) {
                             if (this.rand.nextFloat() < 0.30) {
-                                if (this.dinosaur.getDinosaurType() == Dinosaur.DinosaurType.AGGRESSIVE) {
-                                    if (this.rand.nextFloat() * 4.0F < (float) this.herd.members.size() / this.dinosaur.getMaxHerdSize()) {
+                            	if (this.getMetadata().getDinosaurType() == Dinosaur.DinosaurType.AGGRESSIVE) {
+                                    if (this.rand.nextFloat() * 4.0F < (float) this.herd.members.size() / this.getMetadata().getMaxHerdSize()) {
                                         this.herd.enemies.add(player);
                                     } else {
                                         this.attackEntityAsMob(player);
                                     }
-                                } else if (this.dinosaur.getDinosaurType() == Dinosaur.DinosaurType.SCARED) {
+                            	} else if (this.getMetadata().getDinosaurType() == Dinosaur.DinosaurType.SCARED) {
                                     this.herd.fleeing = true;
                                     this.herd.enemies.add(player);
                                 }
@@ -1369,7 +1380,8 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public double getAttackDamage() {
-        return this.interpolate(this.dinosaur.getBabyStrength(), this.dinosaur.getAdultStrength());
+    	DinosaurMetadata metadata = this.getMetadata();
+        return this.interpolate(metadata.getBabyStrength(), metadata.getAdultStrength());
     }
 
     public boolean isMale() {
@@ -1386,7 +1398,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
     public int getAgePercentage() {
         int age = this.getDinosaurAge();
-        return age != 0 ? age * 100 / this.getDinosaur().getMaximumAge() : 0;
+        return age != 0 ? age * 100 / this.getMetadata().getMaximumAge() : 0;
     }
 
     @Override
@@ -1611,7 +1623,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     @Override
     public String toString() {
         return "DinosaurEntity{ " +
-                this.dinosaur.getName() +
+                this.dinosaur.getIdentifier() +
                 ", id=" + this.getEntityId() +
                 ", remote=" + this.getEntityWorld().isRemote +
                 ", isDead=" + this.isDead +
@@ -1621,7 +1633,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                 "\n    " +
                 ", dinosaurAge=" + this.dinosaurAge +
                 ", prevAge=" + this.prevAge +
-                ", maxAge" + this.dinosaur.getMaximumAge() +
+                ", maxAge" + this.getMetadata().getMaximumAge() +
                 ", ticksExisted=" + this.ticksExisted +
                 ", entityAge=" + this.idleTime +
                 ", isMale=" + this.isMale +
@@ -1657,19 +1669,20 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public Vec3d getHeadPos() {
-        double scale = this.interpolate(this.dinosaur.getScaleInfant(), this.dinosaur.getScaleAdult());
+    	DinosaurMetadata metadata = this.getMetadata();
+        double scale = this.interpolate(metadata.getScaleInfant(), metadata.getScaleAdult());
 
         double[] headPos = this.dinosaur.getHeadPosition(this.getGrowthStage(), ((360 - this.rotationYawHead)) % 360 - 180);
 
-        double headX = ((headPos[0] * 0.0625F) - this.dinosaur.getOffsetX()) * scale;
-        double headY = (((24 - headPos[1]) * 0.0625F) - this.dinosaur.getOffsetY()) * scale;
-        double headZ = ((headPos[2] * 0.0625F) - this.dinosaur.getOffsetZ()) * scale;
+        double headX = ((headPos[0] * 0.0625F) - metadata.getOffsetX()) * scale;
+        double headY = (((24 - headPos[1]) * 0.0625F) - metadata.getOffsetY()) * scale;
+        double headZ = ((headPos[2] * 0.0625F) - metadata.getOffsetZ()) * scale;
 
         return new Vec3d(this.posX + headX, this.posY + (headY), this.posZ + headZ);
     }
 
     public boolean areEyelidsClosed() {
-        return !this.dinosaur.isMarineCreature() && ((this.isCarcass || this.isSleeping) || this.ticksExisted % 100 < 4);
+    	return !this.getMetadata().isMarineCreature() && ((this.isCarcass || this.isSleeping) || this.ticksExisted % 100 < 4);
     }
 
     @Override
@@ -1777,7 +1790,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
     }
 
     public EntityAIBase getAttackAI() {
-        return new DinosaurAttackMeleeEntityAI(this, this.dinosaur.getAttackSpeed(), false);
+    	return new DinosaurAttackMeleeEntityAI(this, this.getMetadata().getAttackSpeed(), false);
     }
 
     public List<Class<? extends EntityLivingBase>> getAttackTargets() {
@@ -1824,7 +1837,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
                 Herd herd = this.herd;
 
                 if (herd != null) {
-                    herd.fleeing = !herd.shouldDefend(enemies) || this.dinosaur.shouldFlee();
+                	herd.fleeing = !herd.shouldDefend(enemies) || this.getMetadata().shouldFlee();
 
                     for (EntityLivingBase entity : enemies) {
                         if (!herd.enemies.contains(entity)) {
@@ -1898,7 +1911,7 @@ public abstract class DinosaurEntity extends EntityCreature implements IEntityAd
 
     @Override
     public boolean isMarineCreature() {
-        return this.dinosaur.isMarineCreature();
+    	return this.getMetadata().isMarineCreature();
     }
 
     @Override

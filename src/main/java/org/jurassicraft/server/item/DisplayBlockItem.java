@@ -1,6 +1,7 @@
 package org.jurassicraft.server.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -13,6 +14,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -44,7 +46,7 @@ public class DisplayBlockItem extends Item {
     public void initModels(Collection<Dinosaur> dinos, RenderingHandler renderer) {
         for (Dinosaur dino : dinos) {
             int dex = EntityHandler.getDinosaurId(dino);
-            String dinoName = dino.getName().toLowerCase(Locale.ENGLISH).replaceAll(" ", "_");
+            String dinoName = dino.getIdentifier().getResourcePath();
             renderer.registerItemRenderer(this, getMetadata(dex, 0, false), "action_figure/action_figure_" + dinoName);
             renderer.registerItemRenderer(this, getMetadata(dex, 1, false), "action_figure/action_figure_" + dinoName);
             renderer.registerItemRenderer(this, getMetadata(dex, 2, false), "action_figure/action_figure_" + dinoName);
@@ -66,7 +68,7 @@ public class DisplayBlockItem extends Item {
                 block.onBlockPlacedBy(world, pos, state, player, stack);
 
                 int mode = this.getVariant(stack);
-
+                world.playSound(null, pos, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, (SoundType.WOOD.getVolume() + 1.0F) / 2.0F, SoundType.WOOD.getPitch() * 0.8F);
                 DisplayBlockEntity tile = (DisplayBlockEntity) world.getTileEntity(pos);
 
                 if (tile != null) {

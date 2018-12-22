@@ -8,6 +8,6 @@ public interface ISyncable
 
     NonNullList getSyncFields(NonNullList fields);
     
-    void packetDataHandler(ByteBuf buffer);
+    void packetDataHandler(ByteBuf fields);
     
 }
