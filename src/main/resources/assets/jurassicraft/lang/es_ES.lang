@@ -243,6 +243,7 @@ item.wild_potato.name=Patata Salvaje
 item.wild_potato_cooked.name=Patata Salvaje Cocinada
 
 //Blocks ==================================================
+tile.ancient_item_holding_block.name=Bloque de sujeción de artículo antiguo
 tile.fossil_block.name=Fósil de {dinosaur}
 tile.encased_fossil.name=Fósil Recubierto de {dinosaur}
 tile.plant_fossil_block.name=Fósil Vegetal
