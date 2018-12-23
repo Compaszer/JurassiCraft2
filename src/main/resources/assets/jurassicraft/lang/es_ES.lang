@@ -564,6 +564,8 @@ key.vehicle_5.switch=Intentando Mover al Asiento 6
 key.vehicle_6.switch=Intentando Mover al Asiento 7
 key.vehicle_7.switch=Intentando Mover al Asiento 8
 key.vehicle_8.switch=Intentando Mover al Asiento 9
+key.vehicle_helicopter.up=Ascender
+key.vehicle_helicopter.down=Descender
 
 //Other =============
 message.tame.name=Has domado un {dinosaur}

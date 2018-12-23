@@ -565,6 +565,8 @@ key.vehicle_5.switch=Attempt to move to Seat 6
 key.vehicle_6.switch=Attempt to move to Seat 7
 key.vehicle_7.switch=Attempt to move to Seat 8
 key.vehicle_8.switch=Attempt to move to Seat 9
+key.vehicle_helicopter.up=Ascend
+key.vehicle_helicopter.down=Descend
 
 //Other =============
 message.tame.name=You have tamed a {dinosaur}
