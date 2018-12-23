@@ -54,6 +54,8 @@ public class Loot {
     public static final ResourceLocation VISITOR_DORM_TOWER = new ResourceLocation(JurassiCraft.MODID, "structure/visitor_centre/dorm_tower");
     public static final ResourceLocation VISITOR_DINING_HALL = new ResourceLocation(JurassiCraft.MODID, "structure/visitor_centre/dining_hall");
 
+	public static final ResourceLocation FOSSIL_DIGSITE_LOOT = new ResourceLocation(JurassiCraft.MODID, "structure/fossil_digsite");
+
     public static final DinosaurData DINOSAUR_DATA = new DinosaurData();
     public static final PlantData PLANT_DATA = new PlantData();
     public static final RandomDNA RANDOM_DNA = new RandomDNA();
@@ -133,7 +135,17 @@ public class Loot {
         }else if (name.getResourcePath().equals(Loot.VISITOR_KITCHEN.getResourcePath())) {
               LootEntry waterBottle = Loot.entry(Items.POTIONITEM).count(0, 1).function(POTION_DATA).build();
               table.addPool(Loot.pool("items").rolls(3, 4).entries(waterBottle).build());
+        }else if (name.getResourcePath().equals(Loot.FOSSIL_DIGSITE_LOOT.getResourcePath())) {
+            ArrayList<LootEntry> fossilParts = new ArrayList<LootEntry>();
+            for (String fossilType : ItemHandler.FOSSILS.keySet()) {
+                LootEntry fossilPart = Loot.entry(ItemHandler.FOSSILS.get(fossilType)).weight(1)
+                        .function(DINOSAUR_DATA).count(1, 3).build();
+                fossilParts.add(fossilPart);
+            }
+            table.addPool(Loot.pool("items").rolls(1, 2)
+                    .entries(fossilParts.toArray(new LootEntry[ItemHandler.FOSSILS.keySet().size()])).build());
         }
+        
         }
         if(frozen) { //If the table was originally frozen, then freeze it.
             table.freeze();

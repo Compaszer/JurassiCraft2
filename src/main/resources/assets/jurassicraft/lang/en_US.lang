@@ -29,6 +29,7 @@ entity.jurassicraft.attraction_sign.name=Attraction Sign
 entity.jurassicraft.paddock_sign.name=Paddock Sign
 
 entity.Villager.jurassicraft:geneticist=Geneticist
+entity.Villager.jurassicraft:paleontologist=Paleontologist
 
 //Items ==================================================
 item.plaster_and_bandage.name=Plaster and Bandage
@@ -243,6 +244,7 @@ item.wild_potato.name=Wild Potato
 item.wild_potato_cooked.name=Cooked Wild Potato
 
 //Blocks ==================================================
+tile.ancient_item_holding_block.name=Ancient Item Holding Block
 tile.fossil_block.name={dinosaur} Fossil
 tile.encased_fossil.name=Encased {dinosaur} Fossil
 tile.plant_fossil_block.name=Plant Fossil

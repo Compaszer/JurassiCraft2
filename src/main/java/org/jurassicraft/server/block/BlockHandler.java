@@ -155,6 +155,8 @@ public class BlockHandler
     public static PaleoBaleBlock PALEO_BALE_FERN = new PaleoBaleBlock(PaleoBaleBlock.Variant.FERN);
     public static PaleoBaleBlock PALEO_BALE_LEAVES = new PaleoBaleBlock(PaleoBaleBlock.Variant.LEAVES);
     public static PaleoBaleBlock PALEO_BALE_OTHER = new PaleoBaleBlock(PaleoBaleBlock.Variant.OTHER);
+    
+    public static final AncientItemHoldingBlock ANCIENT_ITEM_HOLDING_BLOCK = new AncientItemHoldingBlock();
 
     public static void init()
     {
@@ -276,6 +278,8 @@ public class BlockHandler
         registerBlock(PALEO_BALE_CYCAD, "Paleo Bale Cycad");
         registerBlock(PALEO_BALE_FERN, "Paleo Bale Fern");
         registerBlock(PALEO_BALE_LEAVES, "Paleo Bale Leaves");
+        
+        registerBlock(AncientItemHoldingBlockEntity.class, ANCIENT_ITEM_HOLDING_BLOCK, "Ancient Item Holding Block");
     }
 
     public static void registerTreeType(TreeType type)
