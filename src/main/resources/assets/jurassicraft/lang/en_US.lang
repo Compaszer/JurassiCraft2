@@ -379,6 +379,9 @@ tile.cultivate.name={color} Cultivator
 tile.cultivator.name=Cultivator
 
 tile.clear_glass.name=Clear Glass
+tile.clear_glass_pane.name=Clear Glass Pane
+tile.reinforced_glass.name=Reinforced Glass
+tile.reinforced_glass_pane.name=Reinforced Glass Pane
 
 tile.feeder.name=Feeder
 tile.bug_crate.name=Bug Farming Crate
