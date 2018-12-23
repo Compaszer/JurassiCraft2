@@ -6,3 +6,5 @@
 *Fixed Growth Serum issues
 *Fixed an incompatibility with Chisels & Bits
 +Added cleaning animation to cleaning station
++Added Digsite
++Added paleontologist villager
