@@ -236,6 +236,10 @@ public class BlockHandler
         registerBlock(PEAT_MOSS, "Peat Moss");
 
         registerBlock(CLEAR_GLASS, "Clear Glass");
+		registerBlock(CLEAR_GLASS_PANE, "Clear Glass Pane");
+
+		registerBlock(REINFORCED_GLASS, "Reinforced Glass");
+		registerBlock(REINFORCED_GLASS_PANE, "Reinforced Glass Pane");
 
         registerBlock(PLANKTON_SWARM, "Plankton Swarm");
         registerBlock(KRILL_SWARM, "Krill Swarm");
