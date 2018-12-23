@@ -509,6 +509,7 @@ public enum RenderingHandler {
         ClientRegistry.bindTileEntitySpecialRenderer(FeederBlockEntity.class, new FeederRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(ElectricFencePoleBlockEntity.class, new ElectricFencePoleRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(CleaningStationBlockEntity.class, new CleaningStationRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(AncientItemHoldingBlockEntity.class, new AncientItemHoldingBlockRenderer());
 //        ClientRegistry.bindTileEntitySpecialRenderer(CultivatorBlockEntity.class, new CultivatorRenderer());
     }
 
