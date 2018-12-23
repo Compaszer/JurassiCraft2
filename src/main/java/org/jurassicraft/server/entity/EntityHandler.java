@@ -118,7 +118,7 @@ public class EntityHandler {
 
         registerEntity(DinosaurEggEntity.class, "Dinosaur Egg");
         registerEntity(HelicopterEntity.class, "Helicopter base");
-        registerEntity(DummyCameraEntity.class, "DummyCameraEntity");
+        //registerEntity(DummyCameraEntity.class, "DummyCameraEntity");
     }
 
     private static void initDinosaurs() {

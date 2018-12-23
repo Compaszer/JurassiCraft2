@@ -6,4 +6,4 @@
 *Fixed Growth Serum issues
 *Fixed an incompatibility with Chisels & Bits
 +Added cleaning animation to cleaning station
-+Made the movement of the helicopter smoother
++Improved the helicopter's physics
