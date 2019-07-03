@@ -19,7 +19,6 @@ import org.jurassicraft.server.command.ForceAnimationCommand;
 import org.jurassicraft.server.command.SpawnStructureCommand;
 import org.jurassicraft.server.message.*;
 import org.jurassicraft.server.proxy.ServerProxy;
-import org.lwjgl.input.Keyboard;
 
 @Mod(modid = JurassiCraft.MODID, name = JurassiCraft.NAME, version = JurassiCraft.VERSION, dependencies = "required-after:llibrary@[" + JurassiCraft.LLIBRARY_VERSION + ",);required-after:forge@[14.23.4.2705,)")
 public class JurassiCraft {
