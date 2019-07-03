@@ -27,7 +27,6 @@ import org.jurassicraft.client.event.ClientEventHandler;
 import org.jurassicraft.client.gui.*;
 import org.jurassicraft.client.model.JurassicraftTabulaModelHandler;
 import org.jurassicraft.client.render.RenderingHandler;
-import org.jurassicraft.client.render.entity.OverridenEntityRenderer;
 import org.jurassicraft.client.sound.SoundHandler;
 import org.jurassicraft.client.sound.VehicleSound;
 import org.jurassicraft.server.block.entity.*;
