@@ -25,7 +25,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -206,39 +205,6 @@ public class ClientEventHandler {
 					((DinosaurEntity) entity).isRendered = false;
 				}
 			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onSetupAngles(RenderPlayerEvent.Pre event) {
-		EntityPlayer player = event.getEntityPlayer();
-		if (player.getRidingEntity() instanceof HelicopterEntity) {
-//			HelicopterEntity heli = (HelicopterEntity) player.getRidingEntity();
-//			GlStateManager.translate(Math.cos(Math.toRadians(heli.rotationYaw - 90)) * 1.0f, 1.5f, Math.sin(Math.toRadians(heli.rotationYaw - 90)) * 1.0f);
-//			GlStateManager.rotate((float) (Math.cos(Math.toRadians(heli.rotationYaw)) * heli.pitch), 1, 0, 0);
-//			GlStateManager.rotate((float) (Math.sin(Math.toRadians(heli.rotationYaw)) * heli.pitch), 0, 0, 1);
-//			GlStateManager.translate(-Math.cos(Math.toRadians(heli.rotationYaw - 90)) * 1.0f, -1.5f, -Math.sin(Math.toRadians(heli.rotationYaw - 90)) * 1.0f);
-
-//			event.getRenderer().getMainModel().bipedBody.rotateAngleX = 90;
-//			event.getRenderer().getMainModel().bipedBody.renderWithRotation(0.0625f);
-//
-//			event.getRenderer().getMainModel().bipedBody.isHidden = true;
-		}
-	}
-
-	@SubscribeEvent
-	public void onSetupAngles(RenderPlayerEvent.Post event) {
-		EntityPlayer player = event.getEntityPlayer();
-		if (player.getRidingEntity() instanceof HelicopterEntity) {
-//			HelicopterEntity heli = (HelicopterEntity) player.getRidingEntity();
-//			GlStateManager.translate(Math.cos(Math.toRadians(heli.rotationYaw - 90)) * 1.0f, 1.5f, Math.sin(Math.toRadians(heli.rotationYaw - 90)) * 1.0f);
-//			GlStateManager.rotate(-(float) (Math.cos(Math.toRadians(heli.rotationYaw)) * heli.pitch), 1, 0, 0);
-//			GlStateManager.rotate(-(float) (Math.sin(Math.toRadians(heli.rotationYaw)) * heli.pitch), 0, 0, 1);
-//			GlStateManager.translate(-Math.cos(Math.toRadians(heli.rotationYaw - 90)) * 1.0f, -1.5f, -Math.sin(Math.toRadians(heli.rotationYaw - 90)) * 1.0f);
-			
-			
-//			event.getRenderer().getMainModel().bipedBody.isHidden = false;
-
 		}
 	}
 }
