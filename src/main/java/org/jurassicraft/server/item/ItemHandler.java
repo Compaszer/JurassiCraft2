@@ -168,6 +168,19 @@ public class ItemHandler {
     public static final Item WEST_INDIAN_LILAC_BERRIES = new WestIndianLilacBerriesItem().setCreativeTab(TabHandler.FOODS);
 
     public static final GracilariaItem GRACILARIA = (GracilariaItem) new GracilariaItem(BlockHandler.GRACILARIA).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem AULOPORA = (GracilariaItem) new GracilariaItem(BlockHandler.AULOPORA).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem CLADOCHONUS = (GracilariaItem) new GracilariaItem(BlockHandler.CLADOCHONUS).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem ENALLHELIA = (GracilariaItem) new GracilariaItem(BlockHandler.ENALLHELIA).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem HIPPURITES_RADIOSUS = (GracilariaItem) new GracilariaItem(BlockHandler.HIPPURITES_RADIOSUS).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem LITHOSTROTION = (GracilariaItem) new GracilariaItem(BlockHandler.LITHOSTROTION).setCreativeTab(TabHandler.PLANTS);
+    
+    public static final GracilariaItem STYLOPHYLLOPSIS = (GracilariaItem) new GracilariaItem(BlockHandler.STYLOPHYLLOPSIS).setCreativeTab(TabHandler.PLANTS);
+    
     public static final BasicItem LIQUID_AGAR = new BasicItem(TabHandler.PLANTS);
 
     public static final DinoScannerItem DINO_SCANNER = new DinoScannerItem();
@@ -384,7 +397,20 @@ public class ItemHandler {
         registerItem(RHAMNUS_SEEDS, "Rhamnus Salicifolius Seeds");
         registerItem(RHAMNUS_BERRIES, "Rhamnus Salicifolius Berries");
 
-        registerItem(GRACILARIA, "Gracilaria");
+        registerItem(GRACILARIA, "Gracilaria Coral");
+        
+        registerItem(AULOPORA, "Aulopora Coral");
+        
+        registerItem(CLADOCHONUS, "Cladochonus Coral");
+        
+        registerItem(ENALLHELIA, "Enallhelia Coral");
+        
+        registerItem(HIPPURITES_RADIOSUS, "Hippurites Radiosus Coral");
+        
+        registerItem(LITHOSTROTION, "Lithostrotion Coral");
+        
+        registerItem(STYLOPHYLLOPSIS, "Stylophyllopsis Coral");
+        
         registerItem(LIQUID_AGAR, "Liquid Agar");
 
         registerItem(CHILEAN_SEA_BASS, "Chilean Sea Bass");

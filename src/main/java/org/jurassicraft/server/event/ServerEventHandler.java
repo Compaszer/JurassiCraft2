@@ -67,7 +67,7 @@ public class ServerEventHandler {
         GameRuleHandler.register(event.getWorld());
     }
     
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void blockRegistry(final RegistryEvent.Register<Block> e) {
     	e.getRegistry().register(BlockHandler.VINES.setRegistryName("minecraft", "vine"));
     }

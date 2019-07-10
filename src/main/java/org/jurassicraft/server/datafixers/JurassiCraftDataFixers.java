@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JurassiCraftDataFixers {
 	
-    private static final int DATAFIXER_VERSION = 4;
+    private static final int DATAFIXER_VERSION = 5;
     private static final ModFixs modFixs = FMLCommonHandler.instance().getDataFixer().init(JurassiCraft.MODID, DATAFIXER_VERSION);
 
     public static void init() {
@@ -100,5 +100,61 @@ public class JurassiCraftDataFixers {
             }
             return compound;
         }));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:gracilaria_seaweed".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:gracilaria_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:enallhelia".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:enallhelia_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:cladochonus".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:cladochonus_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:hippurites_radiosus".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:hippurites_radiosus_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:lithostrotion".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:lithostrotion_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:aulopora".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:aulopora_coral");
+
+			}
+			return nbt;
+		}));
+        
+        modFixs.registerFix(FixTypes.ITEM_INSTANCE, new DataFixerFactory(5, nbt -> {
+			if ("jurassicraft:stylophyllopsis".equals(nbt.getString("id"))) {
+				nbt.setString("id", "jurassicraft:stylophyllopsis_coral");
+
+			}
+			return nbt;
+		}));
     }
 }

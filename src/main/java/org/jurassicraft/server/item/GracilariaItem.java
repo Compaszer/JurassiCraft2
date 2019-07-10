@@ -1,5 +1,7 @@
 package org.jurassicraft.server.item;
 
+import org.jurassicraft.server.util.LangUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +47,13 @@ public class GracilariaItem extends Item implements IPlantable {
     //  | || |_) | |/ _` | '_ \| __/ _` | '_ \| |/ _ \
     //  | ||  __/| | (_| | | | | || (_| | |_) | |  __/
     // |___|_|   |_|\__,_|_| |_|\__\__,_|_.__/|_|\___|
+    /*
+    @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+    	System.out.println(super.getItemStackDisplayName(stack).split("tile.")[1]);
+    	return LangUtils.translate("plant." + super.getItemStackDisplayName(stack).split(".")[1].split(".")[0] + ".name");
+    	//return LangUtils.translate(super.getItemStackDisplayName(stack).split("_coral")[0] + ".name");
+    }*/
 
     @Override
     public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos) {

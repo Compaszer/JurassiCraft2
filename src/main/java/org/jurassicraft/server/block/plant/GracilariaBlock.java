@@ -2,12 +2,17 @@ package org.jurassicraft.server.block.plant;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockGlass;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -67,24 +72,22 @@ public class GracilariaBlock extends BlockBush {
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return ItemHandler.GRACILARIA;
     }
+    
+   @Override
+   public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+	   return new ItemStack(ItemHandler.GRACILARIA);
+   }
 
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        // This is necessary because we are "water"
-        return state.getValue(LEVEL);
-    }
+   @Override
+   public int getMetaFromState(IBlockState state) {
+       // This is necessary because we are "water"
+       return state.getValue(LEVEL);
+   }
 
     @Override
     protected BlockStateContainer createBlockState() {
         // This is necessary because we are "water"
         return new BlockStateContainer(this, LEVEL);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Block.EnumOffsetType getOffsetType() {
-        // This is so that it isn't always placed exactly at block center.
-        return EnumOffsetType.XZ;
     }
 
     //  ____  _            _    ____            _
@@ -188,5 +191,72 @@ public class GracilariaBlock extends BlockBush {
         }
 
         return null;
+    }
+    
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        
+        BlockPos beside = pos.offset(face);
+        Block blockBeside = world.getBlockState(beside).getBlock();
+        
+        if (blockBeside instanceof BlockGlass) {
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+
+    	BlockPos beside = pos.offset(side);
+    	IBlockState state = blockAccess.getBlockState(beside);
+        Block blockBeside = state.getBlock();
+        
+        if (blockBeside instanceof BlockGlass) {
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+    
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+    {
+        return BlockFaceShape.SOLID;
+    }
+    
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.SOLID;
+    }
+    
+    @Override
+    public Block.EnumOffsetType getOffsetType()
+    {
+        return Block.EnumOffsetType.NONE;
+    }
+
+    
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
+    {
+    	return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
     }
 }

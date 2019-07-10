@@ -92,7 +92,7 @@ public class BlockHandler
     public static final DicroidiumZuberiBlock DICROIDIUM_ZUBERI = new DicroidiumZuberiBlock();
     public static final AjuginuculaSmithiiBlock AJUGINUCULA_SMITHII = new AjuginuculaSmithiiBlock();
     public static final WildOnionBlock WILD_ONION = new WildOnionBlock();
-    public static final GracilariaBlock GRACILARIA = new GracilariaBlock();
+    
     public static final DictyophyllumBlock DICTYOPHYLLUM = new DictyophyllumBlock();
     public static final WestIndianLilacBlock WEST_INDIAN_LILAC = new WestIndianLilacBlock();
     public static final SerennaVeriformansBlock SERENNA_VERIFORMANS = new SerennaVeriformansBlock();
@@ -113,13 +113,15 @@ public class BlockHandler
     public static final DoublePlantBlock GRAMINIDITES_BAMBUSOIDES = new DoublePlantBlock();
     public static final DoublePlantBlock HELICONIA = new DoublePlantBlock();
 
-    public static final AncientCoralBlock ENALLHELIA = new AncientCoralBlock();
-    public static final AncientCoralBlock AULOPORA = new AncientCoralBlock();
-    public static final AncientCoralBlock CLADOCHONUS = new AncientCoralBlock();
-    public static final AncientCoralBlock LITHOSTROTION = new AncientCoralBlock();
-    public static final AncientCoralBlock STYLOPHYLLOPSIS = new AncientCoralBlock();
-    public static final AncientCoralBlock HIPPURITES_RADIOSUS = new AncientCoralBlock();
-
+    public static final EnallheliaBlock ENALLHELIA = new EnallheliaBlock();
+    public static final AuloporaBlock AULOPORA = new AuloporaBlock();
+    public static final CladochonusBlock CLADOCHONUS = new CladochonusBlock();
+    public static final LithostrotionBlock LITHOSTROTION = new LithostrotionBlock();
+    public static final StylopyllopsisBlock STYLOPHYLLOPSIS = new StylopyllopsisBlock();
+    public static final HippuritesRadiosusBlock HIPPURITES_RADIOSUS = new HippuritesRadiosusBlock();
+    public static final GracilariaBlock GRACILARIA = new GracilariaBlock();
+    
+    
     public static final PeatBlock PEAT = new PeatBlock();
     public static final Block PEAT_MOSS = new PeatMossBlock();
     public static final MossBlock MOSS = new MossBlock();
@@ -205,7 +207,7 @@ public class BlockHandler
         registerBlock(ZAMITES, "Cycad Zamites");
         registerBlock(DICKSONIA, "Dicksonia");
         registerBlock(WILD_ONION, "Wild Onion Plant");
-        registerBlock(GRACILARIA, "Gracilaria Seaweed");
+        
         registerBlock(DICROIDIUM_ZUBERI, "Dicroidium Zuberi");
         registerBlock(DICTYOPHYLLUM, "Dictyophyllum");
         registerBlock(WEST_INDIAN_LILAC, "West Indian Lilac");
@@ -227,6 +229,7 @@ public class BlockHandler
         registerBlock(GRAMINIDITES_BAMBUSOIDES, "Graminidites Bambusoides");
         registerBlock(ENALLHELIA, "Enallhelia");
         registerBlock(AULOPORA, "Aulopora");
+        registerBlock(GRACILARIA, "Gracilaria Seaweed");
         registerBlock(CLADOCHONUS, "Cladochonus");
         registerBlock(LITHOSTROTION, "Lithostrotion");
         registerBlock(STYLOPHYLLOPSIS, "Stylophyllopsis");

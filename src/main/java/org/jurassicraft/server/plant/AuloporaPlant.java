@@ -7,6 +7,7 @@ import org.jurassicraft.server.block.BlockHandler;
  * Created by Codyr on 10/11/2016.
  */
 public class AuloporaPlant extends Plant {
+	
     @Override
     public String getName() { return "Aulopora"; }
 

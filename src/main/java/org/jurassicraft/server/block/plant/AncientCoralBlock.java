@@ -3,14 +3,22 @@ package org.jurassicraft.server.block.plant;
 import java.util.Random;
 import org.jurassicraft.server.util.GameRuleHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGlass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AncientCoralBlock extends AncientPlantBlock {
 	
@@ -22,6 +30,7 @@ public class AncientCoralBlock extends AncientPlantBlock {
         super(Material.WATER);
         this.setSoundType(SoundType.PLANT);
         this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0));
+        this.setCreativeTab(null);
     }
 
     private boolean canPlaceBlockOn(Block ground) {
@@ -125,5 +134,71 @@ public class AncientCoralBlock extends AncientPlantBlock {
     @Override
     public int getMetaFromState(IBlockState state) {
         return 0;
+    }
+    
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        
+        BlockPos beside = pos.offset(face);
+        Block blockBeside = world.getBlockState(beside).getBlock();
+        
+        if (blockBeside instanceof BlockGlass) {
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+
+    	BlockPos beside = pos.offset(side);
+    	IBlockState state = blockAccess.getBlockState(beside);
+        Block blockBeside = state.getBlock();
+        
+        if (blockBeside instanceof BlockGlass) {
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+    
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+    {
+        return BlockFaceShape.SOLID;
+    }
+    
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getBlockLayer()
+    {
+        return BlockRenderLayer.SOLID;
+    }
+    
+    @Override
+    public Block.EnumOffsetType getOffsetType()
+    {
+        return Block.EnumOffsetType.NONE;
+    }
+    
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
+    {
+    	return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
     }
 }

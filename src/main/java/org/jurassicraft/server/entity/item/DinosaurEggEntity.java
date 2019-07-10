@@ -1,7 +1,6 @@
 package org.jurassicraft.server.entity.item;
 
 import io.netty.buffer.ByteBuf;
-import jline.internal.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MoverType;
@@ -18,6 +17,8 @@ import org.jurassicraft.server.item.ItemHandler;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 public class DinosaurEggEntity extends Entity implements IEntityAdditionalSpawnData {
     private DinosaurEntity entity;

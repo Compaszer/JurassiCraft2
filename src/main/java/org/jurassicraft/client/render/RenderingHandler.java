@@ -3,11 +3,10 @@ package org.jurassicraft.client.render;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-
+import javax.annotation.Nullable;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.math.BlockPos;
 import org.jurassicraft.JurassiCraft;
-import org.jurassicraft.client.event.ClientEventHandler;
 import org.jurassicraft.client.model.MultipartStateMap;
 import org.jurassicraft.client.model.animation.EntityAnimator;
 import org.jurassicraft.client.model.animation.entity.BrachiosaurusAnimator;
@@ -46,22 +45,23 @@ import org.jurassicraft.server.entity.vehicle.TransportHelicopterEntity;
 import org.jurassicraft.server.item.*;
 import org.jurassicraft.server.plant.Plant;
 import org.jurassicraft.server.plant.PlantHandler;
-
 import com.google.common.collect.Maps;
-
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockFenceGate;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.world.ColorizerFoliage;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -97,12 +97,13 @@ public enum RenderingHandler {
             ModelLoader.setCustomStateMapper(ANCIENT_FENCE_GATES.get(type), new StateMap.Builder().ignore(BlockFenceGate.POWERED).build());
             ModelLoader.setCustomStateMapper(BlockHandler.ANCIENT_DOORS.get(type), new StateMap.Builder().ignore(BlockDoor.POWERED).build());
         }
-        ModelLoader.setCustomStateMapper(ENALLHELIA, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
-        ModelLoader.setCustomStateMapper(AULOPORA, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
-        ModelLoader.setCustomStateMapper(CLADOCHONUS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
-        ModelLoader.setCustomStateMapper(LITHOSTROTION, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
-        ModelLoader.setCustomStateMapper(STYLOPHYLLOPSIS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
-        ModelLoader.setCustomStateMapper(HIPPURITES_RADIOSUS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.ENALLHELIA, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.AULOPORA, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.GRACILARIA, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.CLADOCHONUS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.LITHOSTROTION, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.STYLOPHYLLOPSIS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
+        ModelLoader.setCustomStateMapper(BlockHandler.HIPPURITES_RADIOSUS, new StateMap.Builder().ignore(AncientCoralBlock.LEVEL).build());
 
         ModelLoader.setCustomStateMapper(BlockHandler.LOW_SECURITY_FENCE_BASE, new MultipartStateMap());
         ModelLoader.setCustomStateMapper(BlockHandler.LOW_SECURITY_FENCE_POLE, new MultipartStateMap());
@@ -166,12 +167,13 @@ public enum RenderingHandler {
         registerBlockRenderer(LARGESTIPULE_LEATHER_ROOT, "largestipule_leather_root");
         registerBlockRenderer(RHACOPHYTON, "rhacophyton");
         registerBlockRenderer(GRAMINIDITES_BAMBUSOIDES, "graminidites_bambusoides");
-        registerBlockRenderer(ENALLHELIA, "enallhelia");
-        registerBlockRenderer(AULOPORA, "aulopora");
-        registerBlockRenderer(CLADOCHONUS, "cladochonus");
-        registerBlockRenderer(LITHOSTROTION, "lithostrotion");
-        registerBlockRenderer(STYLOPHYLLOPSIS, "stylophyllopsis");
-        registerBlockRenderer(HIPPURITES_RADIOSUS, "hippurites_radiosus");
+        registerBlockRenderer(BlockHandler.ENALLHELIA, "enallhelia");
+        registerBlockRenderer(BlockHandler.AULOPORA, "aulopora");
+        
+        registerBlockRenderer(BlockHandler.CLADOCHONUS, "cladochonus");
+        registerBlockRenderer(BlockHandler.LITHOSTROTION, "lithostrotion");
+        registerBlockRenderer(BlockHandler.STYLOPHYLLOPSIS, "stylophyllopsis");
+        registerBlockRenderer(BlockHandler.HIPPURITES_RADIOSUS, "hippurites_radiosus");
         registerBlockRenderer(HELICONIA, "heliconia");
 
         registerBlockRenderer(REINFORCED_STONE, "reinforced_stone");
@@ -328,6 +330,19 @@ public enum RenderingHandler {
 
         registerItemRenderer(ItemHandler.WILD_ONION, "wild_onion");
         registerItemRenderer(ItemHandler.GRACILARIA);
+        
+        registerItemRenderer(ItemHandler.AULOPORA, "aulopora_coral");
+        
+        registerItemRenderer(ItemHandler.STYLOPHYLLOPSIS, "stylophyllopsis_coral");
+        
+        registerItemRenderer(ItemHandler.CLADOCHONUS, "cladochonus_coral");
+        
+        registerItemRenderer(ItemHandler.ENALLHELIA, "enallhelia_coral");
+        
+        registerItemRenderer(ItemHandler.HIPPURITES_RADIOSUS, "hippurites_radiosus_coral");
+        
+        registerItemRenderer(ItemHandler.LITHOSTROTION, "lithostrotion_coral");
+        
         registerItemRenderer(LIQUID_AGAR, "liquid_agar");
 
         registerItemRenderer(ItemHandler.PLANT_FOSSIL, "plant_fossil");
@@ -347,10 +362,10 @@ public enum RenderingHandler {
         registerItemRenderer(CAR_WINDSCREEN, "car_windscreen");
         registerItemRenderer(UNFINISHED_CAR, "unfinished_car");
         
-		for (int x = 0; x < VEHICLE_ITEM.variants.length; x++) {
-			registerItemRenderer(VEHICLE_ITEM, x, VEHICLE_ITEM.variants[x]);
-			registerItemRenderer(VEHICLE_ITEM, x, VEHICLE_ITEM.variants[x]);
-			registerItemRenderer(VEHICLE_ITEM, x, VEHICLE_ITEM.variants[x]);
+		for (int x = 0; x < VehicleItem.variants.length; x++) {
+			registerItemRenderer(VEHICLE_ITEM, x, VehicleItem.variants[x]);
+			registerItemRenderer(VEHICLE_ITEM, x, VehicleItem.variants[x]);
+			registerItemRenderer(VEHICLE_ITEM, x, VehicleItem.variants[x]);
 		}
 
         registerItemRenderer(MURAL, "mural");
@@ -358,10 +373,10 @@ public enum RenderingHandler {
         for (Dinosaur dinosaur : EntityHandler.getDinosaurs().values()) {
             int meta = EntityHandler.getDinosaurId(dinosaur);
             String formattedName = dinosaur.getIdentifier().getResourcePath();
-            registerItemRenderer(DISPLAY_BLOCK_ITEM, DISPLAY_BLOCK_ITEM.getMetadata(meta, false, false), "action_figure/action_figure_" + formattedName);
+            registerItemRenderer(DISPLAY_BLOCK_ITEM, DisplayBlockItem.getMetadata(meta, false, false), "action_figure/action_figure_" + formattedName);
             
-            registerItemRenderer(DISPLAY_BLOCK_ITEM, DISPLAY_BLOCK_ITEM.getMetadata(meta, true, true), "skeleton/fossil/skeleton_fossil_" + formattedName);
-            registerItemRenderer(DISPLAY_BLOCK_ITEM, DISPLAY_BLOCK_ITEM.getMetadata(meta, false, true), "skeleton/fresh/skeleton_fresh_" + formattedName);
+            registerItemRenderer(DISPLAY_BLOCK_ITEM, DisplayBlockItem.getMetadata(meta, true, true), "skeleton/fossil/skeleton_fossil_" + formattedName);
+            registerItemRenderer(DISPLAY_BLOCK_ITEM, DisplayBlockItem.getMetadata(meta, false, true), "skeleton/fresh/skeleton_fresh_" + formattedName);
             
             ItemHandler.FOSSILS.forEach((type, item) -> {
                 List<Dinosaur> dinosaursForType = FossilItem.fossilDinosaurs.get(type);
@@ -478,6 +493,14 @@ public enum RenderingHandler {
         for (AncientLeavesBlock block : ANCIENT_LEAVES.values()) {
             blockColors.registerBlockColorHandler((state, access, pos, tintIndex) -> pos == null ? ColorizerFoliage.getFoliageColorBasic() : BiomeColorHelper.getFoliageColorAtPos(access, pos), block);
         }
+        
+        blockColors.registerBlockColorHandler(new IBlockColor()
+        {
+            public int colorMultiplier(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
+            {
+            	return worldIn != null && pos != null ? BiomeColorHelper.getWaterColorAtPos(worldIn, pos) : -1;
+            }
+        }, BlockHandler.STYLOPHYLLOPSIS, BlockHandler.ENALLHELIA, BlockHandler.AULOPORA, BlockHandler.CLADOCHONUS, BlockHandler.LITHOSTROTION, BlockHandler.HIPPURITES_RADIOSUS, BlockHandler.GRACILARIA);
 
         blockColors.registerBlockColorHandler((state, access, pos, tintIndex) -> pos == null ? ColorizerFoliage.getFoliageColorBasic() : BiomeColorHelper.getFoliageColorAtPos(access, pos), MOSS);
         if(JurassiCraftConfig.VEHICLES.tourRailBlockEnabled)
@@ -492,11 +515,10 @@ public enum RenderingHandler {
         }
 
         itemColors.registerItemColorHandler((stack, tintIndex) -> {
-            DinosaurSpawnEggItem item = (DinosaurSpawnEggItem) stack.getItem();
-            Dinosaur dino = item.getDinosaur(stack);
+            Dinosaur dino = DinosaurSpawnEggItem.getDinosaur(stack);
             if (dino != null) {
             	DinosaurMetadata metadata = dino.getMetadata();
-                int mode = item.getMode(stack);
+                int mode = DinosaurSpawnEggItem.getMode(stack);
                 if (mode == 0) {
                     mode = JurassiCraft.timerTicks % 64 > 32 ? 1 : 2;
                 }
