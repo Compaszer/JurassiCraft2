@@ -6,10 +6,13 @@ import org.jurassicraft.client.render.overlay.HelicopterHUDRenderer.HudElementCo
 import org.jurassicraft.client.render.overlay.HelicopterHUDRenderer.HudElementStatsDisplay;
 import org.jurassicraft.client.render.overlay.HelicopterHUDRenderer.HudElementTachometer;
 import org.jurassicraft.server.item.ItemHandler;
+
+import net.minecraft.block.BlockEventData;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
 
 public class TransportHelicopterEntity extends HelicopterEntity {
 
@@ -40,15 +43,16 @@ public class TransportHelicopterEntity extends HelicopterEntity {
 	protected WheelData createWheels() {
 		return new WheelData(1, 2, -1, -2.2);
 	}
-	
-    @Override
-    public void doPlayerRotations(EntityPlayer player, float partialTicks) {
 
-    	float offsetY = 0.9F;
-        GlStateManager.translate(0, offsetY, 0);
-        GlStateManager.rotate(this.pitch, 0, 0, 1);
-        GlStateManager.translate(0, -offsetY, 0);
-    }
+	@Override
+	public void doPlayerRotations(EntityPlayer player, float partialTicks) {
+		float rotation = (float) Math.toRadians(player.rotationYaw - this.rotationYaw);
+		float offsetZ = seats[getSeatForEntity(player)].getOffsetZ();
+		GlStateManager.translate(Math.sin(-rotation) * offsetZ, 0, Math.cos(rotation) * offsetZ);
+		GlStateManager.rotate((float) ((Math.sin(rotation) * this.pitch) + (Math.cos(rotation) * this.roll)), 0, 0, 1);
+		GlStateManager.rotate((float) ((Math.cos(rotation) * this.pitch) + (Math.sin(-rotation) * this.roll)), 1, 0, 0);
+		GlStateManager.translate(-Math.sin(-rotation) * offsetZ, -0, -Math.cos(rotation) * offsetZ);
+	}
 
 	@Override
 	public void dropItems() {

@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -69,6 +70,8 @@ public abstract class VehicleEntity extends Entity implements MultiSeatedEntity 
 	public float wheelRotateAmount;
 	public float prevWheelRotateAmount;
 
+	public float pitch;
+	public float roll;
 	protected float rotationDelta;
     private boolean noiseInstance;
 	public int interpProgress;
@@ -110,6 +113,10 @@ public abstract class VehicleEntity extends Entity implements MultiSeatedEntity 
 	public double estimatedSpeed = 0D;
 
 	private byte prevState = 0;
+	
+//	public float tmpX=0;
+//	public float tmpY=0;
+//	public float tmpZ=0;
 
 	public VehicleEntity(World world) {
 		super(world);
@@ -896,6 +903,14 @@ public abstract class VehicleEntity extends Entity implements MultiSeatedEntity 
 			double z = VehicleEntity.this.posZ + sideZ * this.offsetX + forwardZ * this.offsetZ;
 			return new Vec3d(x, y, z);
 		}
+		
+		public float getOffsetY() {
+			return this.offsetY;
+		}
+		
+		public float getOffsetZ() {
+			return this.offsetZ;
+		}
 
 		public AxisAlignedBB getBounds() {
 			Vec3d pos = this.getPos();
@@ -954,6 +969,13 @@ public abstract class VehicleEntity extends Entity implements MultiSeatedEntity 
 	}
 
 	public void doPlayerRotations(EntityPlayer player, float partialTicks) {
-		
+//		float rotation = (float) Math.toRadians(player.rotationYaw - this.rotationYaw);
+//		float offsetY = seats[getSeatForEntity(player)].getOffsetY();
+//		float offsetZ = seats[getSeatForEntity(player)].getOffsetZ();
+//		GlStateManager.translate(Math.sin(-rotation) * offsetZ, offsetY + tmpY, Math.cos(rotation) * offsetZ);
+//		GlStateManager.rotate((float) ((Math.sin(rotation) * this.pitch) + (Math.cos(rotation) * this.roll)), 0, 0, 1);
+//		GlStateManager.rotate((float) ((Math.cos(rotation) * this.pitch) + (Math.sin(-rotation) * this.roll)), 1, 0, 0);
+//		GlStateManager.translate(-Math.sin(-rotation) * offsetZ, -offsetY - tmpY, -Math.cos(rotation) * offsetZ );
+//		System.out.println(this.pitch + " : " + this.rotationYaw);
 	}
 }

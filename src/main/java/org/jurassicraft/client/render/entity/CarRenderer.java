@@ -102,6 +102,10 @@ public abstract class CarRenderer<E extends VehicleEntity> extends Render<E> {
             GlStateManager.translate(0, -rot.x, -rot.y);
             float localRotationRoll = (float) MathUtils.cosineFromPoints(new Vec3d(rightValue, 0, vec.z), new Vec3d(leftValue, 0, vec.z), new Vec3d(leftValue, 0, vec.x));//TODO: same as above
             GlStateManager.rotate(leftValue < rightValue ? localRotationRoll : -localRotationRoll, 0, 0, 1);
+            entity.pitch = frontValue < backValue ? localRotationPitch : -localRotationPitch;
+            entity.roll= leftValue < rightValue ? localRotationRoll : -localRotationRoll;
+//            entity.tmpY=(float) rot.x;
+//            entity.tmpZ = (float) rot.y;
         }
     }
 
